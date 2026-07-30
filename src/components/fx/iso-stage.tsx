@@ -1,17 +1,26 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useRef, type ReactNode } from "react";
+import { useRef } from "react";
 import { Logo } from "../logo";
+import { LiquidGlass } from "./liquid-glass";
 import { useEffectsEnabled, useInView } from "./use-effects-enabled";
 
 /**
- * The stage the isometric world sits on.
+ * The hero stage — the one place on the site that runs WebGL.
  *
- * A ShaderGradient supplies the light behind the scene — kept low-contrast and
- * cream/honey so the blocks stay readable against it. Without WebGL the same
- * area is a flat cream panel with the flat logo, which is a complete
- * composition rather than a hole where an effect should be.
+ * All four effect libraries are concentrated here, each doing a different job
+ * so none of them is decoration:
+ *
+ *   - @shadergradient/react  lights the stage behind the scene
+ *   - @react-three/fiber     animates the logo itself, in true isometric
+ *   - dashersw/liquid-glass  the badge, refracting the live gradient behind it
+ *   - @paper-design/shaders  the flat mark inside that badge, in liquid metal
+ *
+ * Nothing else on the site loads WebGL. Storefronts and the admin are plain.
+ *
+ * Without WebGL the stage is a white block with the flat logo — a finished
+ * composition, not a hole where an effect should be.
  */
 
 const ShaderGradientCanvas = dynamic(
@@ -23,16 +32,14 @@ const ShaderGradient = dynamic(
   { ssr: false },
 );
 const IsoScene = dynamic(() => import("./iso-scene"), { ssr: false });
+const LiquidMetal = dynamic(
+  () => import("@paper-design/shaders-react").then((m) => m.LiquidMetal),
+  { ssr: false },
+);
 
-export function IsoStage({
-  className = "",
-  children,
-}: {
-  className?: string;
-  /** Optional overlay content, e.g. labels pinned to the stage. */
-  children?: ReactNode;
-}) {
+export function IsoStage({ className = "" }: { className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const gradientRef = useRef<HTMLDivElement>(null);
   const enabled = useEffectsEnabled();
   const inView = useInView(ref);
   const live = enabled && inView;
@@ -43,7 +50,7 @@ export function IsoStage({
       className={`iso-block relative overflow-hidden bg-iso-white ${className}`}
     >
       {live ? (
-        <div className="absolute inset-0" aria-hidden>
+        <div ref={gradientRef} className="absolute inset-0" aria-hidden>
           <ShaderGradientCanvas
             style={{ position: "absolute", inset: 0 }}
             pixelDensity={1}
@@ -82,7 +89,35 @@ export function IsoStage({
         )}
       </div>
 
-      {children}
+      {/* Glass badge, pinned to the stage floor. It refracts the gradient, and
+          holds the flat mark rendered in liquid metal. */}
+      {live ? (
+        <div className="pointer-events-none absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-auto">
+          <LiquidGlass sourceRef={gradientRef} borderRadius={14} tintOpacity={0.2}>
+            <div className="flex items-center gap-2.5 px-3 py-2">
+              <span className="relative size-8 shrink-0">
+                <LiquidMetal
+                  image="/bee-silhouette.png"
+                  className="absolute inset-0 size-full"
+                  colorBack="#00000000"
+                  colorTint="#f0b000"
+                  repetition={2}
+                  softness={0.2}
+                  shiftRed={0.15}
+                  shiftBlue={-0.15}
+                  contour={1}
+                  distortion={0.1}
+                  speed={0.55}
+                  angle={0.3}
+                />
+              </span>
+              <span className="text-[13px] font-semibold tracking-tight text-iso-black">
+                Hanubees
+              </span>
+            </div>
+          </LiquidGlass>
+        </div>
+      ) : null}
     </div>
   );
 }

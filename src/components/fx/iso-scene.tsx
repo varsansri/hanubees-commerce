@@ -3,27 +3,39 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { RoundedBox } from "@react-three/drei";
 import { useEffect, useRef, useState } from "react";
-import type { Group, Mesh } from "three";
+import type { Group, Mesh, MeshStandardMaterial } from "three";
 import { DoubleSide, MathUtils } from "three";
 
 /**
- * The Hanubees isometric world.
+ * The Hanubees isometric world, and the logo animation at the centre of it.
  *
- * Rendered through an **orthographic** camera at a fixed 45°/35° angle, which
- * is what makes it read as true isometric rather than as a perspective 3D
- * render — the same projection the logo itself is drawn in. Parallel edges stay
- * parallel, so the scene sits in the same visual language as the mark.
+ * Rendered through an **orthographic** camera at the true 45°/35° isometric
+ * angle — the same projection the logo is drawn in, so parallel edges stay
+ * parallel. Do not swap this for a perspective camera; the projection is the
+ * whole point.
  *
- * The world is a small workbench: a plinth, the winged parcel above it, stacked
- * crates, and a counter. Scrolling turns the whole stage rather than moving the
- * camera, so the composition never breaks.
+ * The parcel runs a repeating beat rather than a passive float: it winds up,
+ * snaps a quarter turn, and lands, then idles until the next one. The turn is
+ * eased out with a small overshoot so it reads as a physical object being set
+ * down. Quarter turns mean it always lands square to the isometric grid.
  */
 
-/* Brand primaries: yellow, black, white, sky blue. Deep yellow is shading only. */
+/* Brand primaries: yellow, black, white, sky blue. */
 const YELLOW = "#f0b000";
 const BLACK = "#221a14";
 const SKY = "#90d0f0";
 const WHITE = "#ffffff";
+
+/** Seconds per beat of the logo cycle. */
+const BEAT = 4.6;
+/** Fraction of a beat spent turning; the remainder idles. */
+const TURN = 0.34;
+
+/** Effort curve for the current time: 0 at rest, 1 at the peak of the turn. */
+function effortAt(t: number) {
+  const phase = (t / BEAT) % 1;
+  return Math.sin(Math.min(phase / TURN, 1) * Math.PI);
+}
 
 /* ---------------------------------------------------------------- pieces */
 
@@ -43,12 +55,22 @@ function Crate({
   );
 }
 
+/**
+ * Wings beat fast while hovering and tuck in during the turn — the way a real
+ * wing loads up before a change of direction.
+ */
 function Wing({ side }: { side: 1 | -1 }) {
   const ref = useRef<Mesh>(null);
+
   useFrame(({ clock }) => {
     if (!ref.current) return;
-    ref.current.rotation.z = side * (0.35 + Math.sin(clock.elapsedTime * 10) * 0.28);
+    const t = clock.elapsedTime;
+    const e = effortAt(t);
+    const beat = Math.sin(t * (10 + e * 16)) * (0.28 + e * 0.16);
+    ref.current.rotation.z = side * (0.35 - e * 0.22 + beat);
+    ref.current.scale.setScalar(1 + e * 0.12);
   });
+
   return (
     <mesh ref={ref} position={[side * 0.62, 0.66, 0]} rotation={[0.35, 0, side * 0.3]}>
       <planeGeometry args={[1.25, 0.5]} />
@@ -63,18 +85,35 @@ function Wing({ side }: { side: 1 | -1 }) {
   );
 }
 
-/** The mark itself: a parcel with stripes and a taped lid, hovering. */
+/** The mark itself, running the animation cycle. */
 function Parcel() {
   const group = useRef<Group>(null);
+  const lid = useRef<Mesh>(null);
+
   useFrame(({ clock }) => {
     if (!group.current) return;
-    group.current.position.y = 1.5 + Math.sin(clock.elapsedTime * 1.1) * 0.1;
+    const t = clock.elapsedTime;
+
+    const beats = t / BEAT;
+    const step = Math.floor(beats);
+    const phase = beats - step;
+
+    const p = Math.min(phase / TURN, 1);
+    const eased = 1 - Math.pow(1 - p, 3);
+    const e = Math.sin(p * Math.PI);
+
+    group.current.rotation.y = (step + eased) * (Math.PI / 2) + e * 0.075;
+    group.current.rotation.z = -e * 0.13;
+    group.current.rotation.x = e * 0.06;
+    group.current.position.y = 1.5 + Math.sin(t * 1.15) * 0.07 + e * 0.34;
+
+    if (lid.current) lid.current.position.y = 0.665 + e * 0.07;
   });
 
   return (
     <group ref={group}>
       <RoundedBox args={[1.3, 1.3, 1.3]} radius={0.07} smoothness={4}>
-        <meshStandardMaterial color={YELLOW} roughness={0.4} metalness={0.15} />
+        <meshStandardMaterial color={YELLOW} roughness={0.38} metalness={0.18} />
       </RoundedBox>
 
       {/* Stripes */}
@@ -85,8 +124,8 @@ function Parcel() {
         </mesh>
       ))}
 
-      {/* Tape across the lid */}
-      <mesh position={[0, 0.665, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      {/* Tape across the lid — lifts a little on each beat */}
+      <mesh ref={lid} position={[0, 0.665, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[0.26, 1.32]} />
         <meshStandardMaterial color={BLACK} roughness={0.6} side={DoubleSide} />
       </mesh>
@@ -97,11 +136,30 @@ function Parcel() {
   );
 }
 
+/** Contact shadow that shrinks as the parcel climbs — this is what sells the lift. */
+function Shadow() {
+  const ref = useRef<Mesh>(null);
+
+  useFrame(({ clock }) => {
+    if (!ref.current) return;
+    const e = effortAt(clock.elapsedTime);
+    const s = 1 - e * 0.3;
+    ref.current.scale.set(s, s, s);
+    (ref.current.material as MeshStandardMaterial).opacity = 0.15 - e * 0.06;
+  });
+
+  return (
+    <mesh ref={ref} position={[0, -0.37, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <circleGeometry args={[0.72, 32]} />
+      <meshStandardMaterial color={BLACK} transparent opacity={0.15} />
+    </mesh>
+  );
+}
+
 /** Everything the parcel flies above. */
 function Bench() {
   return (
     <group>
-      {/* Plinth */}
       <RoundedBox
         args={[4.6, 0.45, 4.6]}
         radius={0.08}
@@ -111,11 +169,7 @@ function Bench() {
         <meshStandardMaterial color={WHITE} roughness={0.85} />
       </RoundedBox>
 
-      {/* Shadow patch under the parcel — grounds the float */}
-      <mesh position={[0, -0.37, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[0.72, 32]} />
-        <meshStandardMaterial color={BLACK} transparent opacity={0.14} />
-      </mesh>
+      <Shadow />
 
       {/* Stacked crates: the catalogue */}
       <Crate position={[-1.5, -0.02, -1.1]} color={WHITE} />
@@ -140,7 +194,6 @@ function Bench() {
         <meshStandardMaterial color={SKY} roughness={0.35} />
       </RoundedBox>
 
-      {/* A parcel already shipped, sitting on the counter */}
       <Crate position={[1.45, 0.87, 0.9]} size={0.5} color={YELLOW} />
     </group>
   );
@@ -153,14 +206,9 @@ function Stage({ spin }: { spin: number }) {
 
   useFrame((_, delta) => {
     if (!group.current) return;
-    // Chase the scroll target rather than snapping to it, so the turn keeps
-    // moving for a beat after the scroll stops.
-    group.current.rotation.y = MathUtils.damp(
-      group.current.rotation.y,
-      spin,
-      3.5,
-      delta,
-    );
+    // Chases the scroll target so the stage keeps turning for a beat after the
+    // scroll stops, instead of snapping to it.
+    group.current.rotation.y = MathUtils.damp(group.current.rotation.y, spin, 3.5, delta);
   });
 
   return (
@@ -197,7 +245,6 @@ export default function IsoScene({ scrollSpin = true }: { scrollSpin?: boolean }
     <Canvas
       orthographic
       dpr={[1, 1.6]}
-      // 45° round, 35.26° up: the true isometric viewing angle.
       camera={{ position: [8, 6.5, 8], zoom: 78, near: -50, far: 100 }}
       gl={{ alpha: true, antialias: true }}
       style={{ background: "transparent" }}
