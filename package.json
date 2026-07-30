@@ -9,8 +9,6 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@paper-design/shaders-react": "^0.0.78",
-    "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
     "@shadergradient/react": "^2.4.20",
     "next": "16.2.6",

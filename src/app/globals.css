@@ -352,3 +352,79 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* ==========================================================================
+   The bee, animated in 2D
+   Layers cut from the artwork; everything below is transform-only so it stays
+   on the compositor and runs on any device.
+   ========================================================================== */
+
+.bee-stage {
+  --bee-beat: 3.6s;
+}
+
+/* Body: a slow hover with a hop on each beat, and a slight bank into it. */
+@keyframes bee-hover {
+  0% { transform: translateY(0) rotate(0deg); }
+  18% { transform: translateY(-4.5%) rotate(-1.4deg); }
+  38% { transform: translateY(-1.2%) rotate(0.5deg); }
+  60% { transform: translateY(-3%) rotate(-0.6deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+/* Wings: fast beat, hinged where they meet the body. Scale across the span
+   rather than rotating alone — a wing foreshortens as it sweeps. */
+@keyframes bee-wing-back {
+  0%, 100% { transform: rotate(-7deg) scaleY(1); }
+  50% { transform: rotate(6deg) scaleY(0.82); }
+}
+@keyframes bee-wing-front {
+  0%, 100% { transform: rotate(6deg) scaleY(0.86); }
+  50% { transform: rotate(-6deg) scaleY(1); }
+}
+
+/* Shadow shrinks as the body rises — counter-timed to the hover. */
+@keyframes bee-shadow {
+  0% { transform: translateX(-50%) scale(1); opacity: 0.20; }
+  18% { transform: translateX(-50%) scale(0.80); opacity: 0.11; }
+  38% { transform: translateX(-50%) scale(0.94); opacity: 0.17; }
+  60% { transform: translateX(-50%) scale(0.86); opacity: 0.14; }
+  100% { transform: translateX(-50%) scale(1); opacity: 0.20; }
+}
+
+.bee-hover {
+  animation: bee-hover var(--bee-beat) cubic-bezier(0.4, 0, 0.3, 1) infinite;
+  will-change: transform;
+}
+
+.bee-wing-back {
+  animation: bee-wing-back 0.24s ease-in-out infinite;
+  will-change: transform;
+}
+
+.bee-wing-front {
+  animation: bee-wing-front 0.22s ease-in-out infinite;
+  will-change: transform;
+}
+
+.bee-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: -6%;
+  width: 58%;
+  height: 7%;
+  border-radius: 999px;
+  background: var(--iso-black);
+  filter: blur(6px);
+  animation: bee-shadow var(--bee-beat) cubic-bezier(0.4, 0, 0.3, 1) infinite;
+}
+
+/* A stated preference wins: hold the finished pose, wings still. */
+@media (prefers-reduced-motion: reduce) {
+  .bee-hover,
+  .bee-wing-back,
+  .bee-wing-front,
+  .bee-shadow {
+    animation: none;
+  }
+}
