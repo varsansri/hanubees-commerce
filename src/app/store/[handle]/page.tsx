@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getStore, listStorefrontProducts } from "@/lib/data";
+import { getStore, listStores, listStorefrontProducts } from "@/lib/data";
 import { money } from "@/lib/format";
+
+/** Storefronts are prerendered — shoppers should never wait on a cold render. */
+export async function generateStaticParams() {
+  const stores = await listStores();
+  return stores.map((s) => ({ handle: s.handle }));
+}
 
 export async function generateMetadata({
   params,

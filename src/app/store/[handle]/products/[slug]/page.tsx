@@ -1,7 +1,23 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProduct, getStore, listStorefrontProducts } from "@/lib/data";
+import {
+  getProduct,
+  getStore,
+  listStores,
+  listStorefrontProducts,
+} from "@/lib/data";
 import { money } from "@/lib/format";
+
+export async function generateStaticParams() {
+  const stores = await listStores();
+  const params = await Promise.all(
+    stores.map(async (store) => {
+      const products = await listStorefrontProducts(store.id);
+      return products.map((p) => ({ handle: store.handle, slug: p.slug }));
+    }),
+  );
+  return params.flat();
+}
 
 export async function generateMetadata({
   params,
