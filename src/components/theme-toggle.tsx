@@ -1,31 +1,51 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { MoonIcon, SunIcon } from "./icons";
 
 type Theme = "light" | "dark";
 
-/**
- * Stamps `data-theme` on <html>, which our tokens let win over the OS
- * preference in both directions. The initial paint is handled by the inline
- * script in the root layout, so there is no flash before this mounts.
- */
-export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme | null>(null);
+const EVENT = "hb-theme-change";
 
-  useEffect(() => {
-    const stored = localStorage.getItem("hb-theme") as Theme | null;
-    const initial =
-      stored ??
-      (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-    setTheme(initial);
-  }, []);
+/**
+ * The theme lives on `<html data-theme>`, not in React state — the inline
+ * script in the root layout sets it before first paint. This component reads
+ * that external value with useSyncExternalStore rather than mirroring it into
+ * state, so there is no cascading render on mount and no flash.
+ */
+function subscribe(onChange: () => void) {
+  const media = window.matchMedia("(prefers-color-scheme: dark)");
+  media.addEventListener("change", onChange);
+  window.addEventListener(EVENT, onChange);
+  return () => {
+    media.removeEventListener("change", onChange);
+    window.removeEventListener(EVENT, onChange);
+  };
+}
+
+function getSnapshot(): Theme {
+  const stamped = document.documentElement.dataset.theme;
+  if (stamped === "light" || stamped === "dark") return stamped;
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+}
+
+/** The server can't know the viewer's preference; tokens handle it in CSS. */
+const getServerSnapshot = (): Theme => "light";
+
+export function ThemeToggle() {
+  const theme = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   function toggle() {
     const next: Theme = theme === "dark" ? "light" : "dark";
-    setTheme(next);
     document.documentElement.dataset.theme = next;
-    localStorage.setItem("hb-theme", next);
+    try {
+      localStorage.setItem("hb-theme", next);
+    } catch {
+      // Private mode — the toggle still works for this session.
+    }
+    window.dispatchEvent(new Event(EVENT));
   }
 
   return (

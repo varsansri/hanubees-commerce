@@ -4,7 +4,7 @@ import { BarList, TrendChart } from "@/components/charts";
 import { Card, CardHeader, PageHeader } from "@/components/ui/card";
 import { Table, TableWrap, Td, Th, Tr } from "@/components/ui/table";
 import { getMetrics, getStore } from "@/lib/data";
-import { money, moneyCompact, number, percent } from "@/lib/format";
+import { money, number, percent } from "@/lib/format";
 
 export default async function AnalyticsPage({
   params,
@@ -52,7 +52,7 @@ export default async function AnalyticsPage({
         <div className="mt-4">
           <TrendChart
             data={m.revenueSeries}
-            formatValue={(v) => moneyCompact(v, store.currency)}
+            currency={store.currency}
             height={300}
           />
         </div>

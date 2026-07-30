@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { moneyCompact } from "@/lib/format";
+import type { Currency } from "@/lib/types";
 
 /* --------------------------------------------------------------------------
    Charts.
@@ -76,13 +78,16 @@ function useWidth<T extends HTMLElement>() {
  */
 export function TrendChart({
   data,
-  formatValue,
+  currency,
   height = 260,
 }: {
   data: Point[];
-  formatValue: (v: number) => string;
+  /** Formatting happens in here: a formatter function could not cross the
+      server/client boundary — only serialisable props can. */
+  currency: Currency;
   height?: number;
 }) {
+  const formatValue = (v: number) => moneyCompact(v, currency);
   const [ref, width] = useWidth<HTMLDivElement>();
   const [hover, setHover] = useState<number | null>(null);
 

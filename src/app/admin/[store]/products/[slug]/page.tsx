@@ -4,7 +4,7 @@ import { Badge, PRODUCT_TONE, label as toLabel } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Field, Input, Select, Textarea } from "@/components/ui/field";
-import { Table, TableWrap, Td, Th, Tr } from "@/components/ui/table";
+import { Table, Td, Th, Tr } from "@/components/ui/table";
 import { getProduct, getStore, inventoryOf } from "@/lib/data";
 import { money } from "@/lib/format";
 

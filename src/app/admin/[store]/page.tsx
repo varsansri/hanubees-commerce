@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { Card, CardHeader, PageHeader } from "@/components/ui/card";
-import { Table, TableWrap, Td, Th, Tr } from "@/components/ui/table";
+import { Table, Td, Th, Tr } from "@/components/ui/table";
 import {
   getMetrics,
   getStore,
@@ -18,7 +18,7 @@ import {
   listOrders,
   listProducts,
 } from "@/lib/data";
-import { money, moneyCompact, number, percent, relative } from "@/lib/format";
+import { money, number, percent, relative } from "@/lib/format";
 
 export default async function StoreHome({
   params,
@@ -99,10 +99,7 @@ export default async function StoreHome({
           }
         />
         <div className="mt-4">
-          <TrendChart
-            data={metrics.revenueSeries}
-            formatValue={(v) => moneyCompact(v, store.currency)}
-          />
+          <TrendChart data={metrics.revenueSeries} currency={store.currency} />
         </div>
       </Card>
 
