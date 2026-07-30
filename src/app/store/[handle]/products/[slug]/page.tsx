@@ -61,7 +61,7 @@ export default async function ProductPage({
       <div className="mt-6 grid gap-8 lg:grid-cols-2">
         <div className="flex flex-col gap-3">
           <div
-            className="aspect-square w-full rounded-2xl border border-line"
+            className="iso-block aspect-square w-full"
             style={{ background: product.images[0] }}
             aria-hidden
           />
@@ -69,7 +69,7 @@ export default async function ProductPage({
             {product.images.map((img, i) => (
               <div
                 key={i}
-                className="aspect-square rounded-lg border border-line"
+                className="rounded-md border-2 border-iso-black"
                 style={{ background: img }}
                 aria-hidden
               />
@@ -78,7 +78,7 @@ export default async function ProductPage({
         </div>
 
         <div className="lg:pt-4">
-          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+          <h1 className="iso-display text-[2rem] sm:text-[2.5rem]">
             {product.title}
           </h1>
 
@@ -91,7 +91,7 @@ export default async function ProductPage({
                 <span className="nums text-[15px] text-text-3 line-through">
                   {money(product.compareAtPrice, store.currency)}
                 </span>
-                <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-medium text-accent-text">
+                <span className="iso-block-sm bg-iso-sky px-2 py-0.5 text-[11px] font-bold text-iso-black">
                   Save{" "}
                   {Math.round(
                     ((product.compareAtPrice - product.price) /
@@ -131,10 +131,10 @@ export default async function ProductPage({
           ) : null}
 
           <div className="mt-7 flex flex-col gap-2">
-            <button className="pressable h-12 w-full rounded-full bg-accent text-sm font-medium text-white [transition:opacity_140ms_var(--ease-out),transform_140ms_var(--ease-out)] hover:opacity-90">
+            <button className="iso-block iso-press h-12 w-full bg-iso-yellow text-[15px] font-semibold text-iso-black">
               Add to cart
             </button>
-            <button className="pressable h-12 w-full rounded-full border border-line-strong text-sm font-medium [transition:background-color_140ms_var(--ease-out),transform_140ms_var(--ease-out)] hover:bg-surface-2">
+            <button className="iso-block iso-press h-12 w-full bg-iso-white text-[15px] font-semibold text-iso-black">
               Buy it now
             </button>
           </div>
@@ -162,7 +162,7 @@ export default async function ProductPage({
 
       {related.length > 0 ? (
         <section className="pt-20">
-          <h2 className="text-lg font-semibold tracking-tight">You might also like</h2>
+          <h2 className="iso-display text-[1.75rem]">You might also like</h2>
           <ul className="mt-5 grid grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-4">
             {related.map((p) => (
               <li key={p.id}>
@@ -171,7 +171,7 @@ export default async function ProductPage({
                   className="group"
                 >
                   <div
-                    className="aspect-[4/5] w-full rounded-xl border border-line [transition:transform_200ms_var(--ease-out)] group-hover:-translate-y-1"
+                    className="iso-block aspect-[4/5] w-full [transition:transform_200ms_var(--ease-out)] group-hover:-translate-y-1"
                     style={{ background: p.images[0] }}
                     aria-hidden
                   />

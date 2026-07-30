@@ -28,14 +28,14 @@ export default async function CartPage({
 
   return (
     <div className="mx-auto max-w-4xl px-4 pt-10">
-      <h1 className="text-2xl font-semibold tracking-tight">Your cart</h1>
+      <h1 className="iso-display text-[2.25rem]">Your cart</h1>
 
       <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_20rem]">
         <ul className="divide-y divide-[var(--border)] border-y border-line">
           {lines.map(({ product, quantity }) => (
             <li key={product.id} className="flex items-center gap-4 py-4">
               <span
-                className="size-20 shrink-0 rounded-lg border border-line"
+                className="size-20 shrink-0 rounded-md border-2 border-iso-black"
                 style={{ background: product.images[0] }}
                 aria-hidden
               />
@@ -49,7 +49,7 @@ export default async function CartPage({
                 <p className="mt-0.5 text-[13px] text-text-3">
                   {product.variants[0].title}
                 </p>
-                <div className="mt-2 inline-flex items-center rounded-full border border-line">
+                <div className="mt-2 inline-flex items-center rounded-md border-2 border-iso-black">
                   <button
                     className="pressable inline-flex size-7 items-center justify-center text-text-2 hover:text-text"
                     aria-label="Decrease quantity"
@@ -72,7 +72,7 @@ export default async function CartPage({
           ))}
         </ul>
 
-        <aside className="h-fit rounded-xl border border-line bg-surface p-5">
+        <aside className="iso-block h-fit bg-surface p-5">
           <h2 className="text-sm font-semibold">Order summary</h2>
           <dl className="mt-4 flex flex-col gap-2 text-[13px]">
             <div className="flex justify-between">
@@ -95,7 +95,7 @@ export default async function CartPage({
             </div>
           </dl>
 
-          <button className="pressable mt-5 h-11 w-full rounded-full bg-accent text-sm font-medium text-white [transition:opacity_140ms_var(--ease-out),transform_140ms_var(--ease-out)] hover:opacity-90">
+          <button className="iso-block-sm iso-press mt-5 h-12 w-full bg-iso-yellow text-[15px] font-semibold text-iso-black">
             Checkout
           </button>
           <Link

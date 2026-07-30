@@ -220,6 +220,76 @@ body {
 }
 
 /* ==========================================================================
+   Isometric world
+   The marketing and storefront surfaces are built from solid blocks in the
+   logo's own palette. Ink on amber is 8.07:1 and ink on sky is 9.21:1, so the
+   blocks carry text directly. The raw sky (#90d0f0) is 1.38:1 on a light
+   surface — it is a fill, never a text colour there.
+   ========================================================================== */
+
+:root {
+  /* Brand primaries: yellow, black, white, sky blue. */
+  --iso-yellow: #f0b000;
+  --iso-yellow-deep: #d09400; /* shading only, never a fill on its own */
+  --iso-sky: #90d0f0;
+  --iso-sky-deep: #6bb4dd;
+  --iso-black: #221a14;
+  --iso-white: #ffffff;
+  /* Text-safe blue for light surfaces, where the fill sky cannot be read. */
+  --iso-sky-text: #1f6088;
+}
+
+:root[data-theme="dark"],
+:root:not([data-theme="light"]) {
+  --iso-sky-text: #90d0f0;
+}
+
+@theme inline {
+  --color-iso-yellow: var(--iso-yellow);
+  --color-iso-yellow-deep: var(--iso-yellow-deep);
+  --color-iso-sky: var(--iso-sky);
+  --color-iso-sky-deep: var(--iso-sky-deep);
+  --color-iso-black: var(--iso-black);
+  --color-iso-white: var(--iso-white);
+  --color-iso-sky-text: var(--iso-sky-text);
+}
+
+/*
+ * A block's offset shadow is its extruded side face — in an isometric world
+ * every solid has one. This is the one place a hard zero-blur shadow is honest
+ * rather than a costume, and it is always the block's own darker shade.
+ */
+.iso-block {
+  border: 2px solid var(--iso-black);
+  border-radius: 0.75rem;
+  box-shadow: 5px 5px 0 var(--iso-black);
+}
+
+.iso-block-sm {
+  border: 2px solid var(--iso-black);
+  border-radius: 0.5rem;
+  box-shadow: 3px 3px 0 var(--iso-black);
+}
+
+/* Pressing a block pushes it into its own shadow. */
+.iso-press {
+  transition:
+    transform var(--dur-press) var(--ease-out),
+    box-shadow var(--dur-press) var(--ease-out);
+}
+.iso-press:active {
+  transform: translate(3px, 3px);
+  box-shadow: 2px 2px 0 var(--iso-black);
+}
+
+/* Display type for the world: tight, heavy, and set on its own line lengths. */
+.iso-display {
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+}
+
+/* ==========================================================================
    Motion
    ========================================================================== */
 

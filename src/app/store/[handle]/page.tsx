@@ -37,7 +37,7 @@ export default async function StorefrontHome({
     <>
       <section className="mx-auto max-w-6xl px-4 pt-10">
         <StoreHero accent={store.theme.accent} fallback={store.theme.heroImage}>
-            <h1 className="text-3xl font-semibold leading-tight tracking-tight text-black sm:text-5xl">
+            <h1 className="iso-display text-3xl text-iso-black sm:text-5xl">
               {store.tagline}
             </h1>
             <p className="mt-4 max-w-md text-[15px] leading-relaxed text-black/70">
@@ -46,7 +46,7 @@ export default async function StorefrontHome({
             </p>
             <Link
               href="#shop"
-              className="pressable mt-7 inline-flex h-11 items-center rounded-full bg-black px-6 text-sm font-medium text-white"
+              className="iso-block iso-press mt-7 inline-flex h-12 items-center bg-iso-yellow px-6 text-[15px] font-semibold text-iso-black"
             >
               Shop the collection
             </Link>
@@ -58,7 +58,7 @@ export default async function StorefrontHome({
           {categories.map((c) => (
             <span
               key={c}
-              className="rounded-full border border-line bg-surface px-3 py-1.5 text-[13px] text-text-2"
+              className="iso-block-sm bg-iso-white px-3 py-1.5 text-[13px] font-semibold text-iso-black"
             >
               {c}
             </span>
@@ -68,7 +68,7 @@ export default async function StorefrontHome({
 
       <section id="shop" className="mx-auto max-w-6xl px-4 pt-12">
         <div className="flex items-end justify-between">
-          <h2 className="text-lg font-semibold tracking-tight">Shop all</h2>
+          <h2 className="iso-display text-[1.75rem]">Shop all</h2>
           <span className="text-[13px] text-text-3">{products.length} items</span>
         </div>
 
@@ -77,7 +77,7 @@ export default async function StorefrontHome({
             <li key={p.id}>
               <Link href={`/store/${store.handle}/products/${p.slug}`} className="group">
                 <div
-                  className="aspect-[4/5] w-full overflow-hidden rounded-xl border border-line [transition:transform_200ms_var(--ease-out)] group-hover:-translate-y-1"
+                  className="iso-block aspect-[4/5] w-full overflow-hidden [transition:transform_200ms_var(--ease-out)] group-hover:-translate-y-1"
                   style={{ background: p.images[0] }}
                   aria-hidden
                 />
@@ -101,16 +101,16 @@ export default async function StorefrontHome({
       </section>
 
       <section id="new" className="mx-auto max-w-6xl px-4 pt-16">
-        <h2 className="text-lg font-semibold tracking-tight">Just landed</h2>
+        <h2 className="iso-display text-[1.75rem]">Just landed</h2>
         <ul className="mt-5 grid gap-4 sm:grid-cols-3">
           {featured.map((p) => (
             <li key={p.id}>
               <Link
                 href={`/store/${store.handle}/products/${p.slug}`}
-                className="flex items-center gap-3 rounded-xl border border-line bg-surface p-3 transition-colors hover:bg-surface-2"
+                className="iso-block iso-press flex items-center gap-3 bg-surface p-3"
               >
                 <span
-                  className="size-14 shrink-0 rounded-lg border border-line"
+                  className="size-14 shrink-0 rounded-md border-2 border-iso-black"
                   style={{ background: p.images[1] ?? p.images[0] }}
                   aria-hidden
                 />
@@ -129,7 +129,7 @@ export default async function StorefrontHome({
       </section>
 
       <section id="about" className="mx-auto max-w-3xl px-4 pt-20 text-center">
-        <h2 className="text-lg font-semibold tracking-tight">About {store.name}</h2>
+        <h2 className="iso-display text-[1.75rem]">About {store.name}</h2>
         <p className="mt-3 text-[15px] leading-relaxed text-text-2">
           We started because the things we wanted to own did not exist at a price
           that made sense. Everything is made in small runs, by people we know, with
