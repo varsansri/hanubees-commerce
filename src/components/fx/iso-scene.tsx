@@ -2,9 +2,9 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { RoundedBox } from "@react-three/drei";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Group, Mesh, MeshStandardMaterial } from "three";
-import { DoubleSide, MathUtils } from "three";
+import { DoubleSide, MathUtils, Shape } from "three";
 
 /**
  * The Hanubees isometric world, and the logo animation at the centre of it.
@@ -20,16 +20,30 @@ import { DoubleSide, MathUtils } from "three";
  * down. Quarter turns mean it always lands square to the isometric grid.
  */
 
-/* Brand primaries: yellow, black, white, sky blue. */
+/* Brand primaries: yellow, black, white, sky blue.
+   SHADE is the brown on the logo's top and right faces — the box's own shaded
+   sides, sampled from the artwork. It is face shading, not a fifth theme
+   colour, and it appears nowhere in the UI. */
 const YELLOW = "#f0b000";
-const BLACK = "#221a14";
+const SHADE = "#804000";
+const BLACK = "#302020";
 const SKY = "#90d0f0";
 const WHITE = "#ffffff";
 
 /** Seconds per beat of the logo cycle. */
-const BEAT = 4.6;
-/** Fraction of a beat spent turning; the remainder idles. */
-const TURN = 0.34;
+const BEAT = 3.8;
+/** Fraction of a beat spent in the hop; the remainder hovers. */
+const TURN = 0.42;
+
+/**
+ * Facing that puts the bee's face toward the camera at rest.
+ *
+ * The face sits on the box's -X panel, whose normal is (-1,0,0). The camera
+ * looks in from (8, 6.5, 8), so the panel has to swing round to point at
+ * roughly (+0.707, 0, +0.707) — a 135° turn — less the 0.5 rad the stage is
+ * already rotated by.
+ */
+const FACING = (Math.PI * 3) / 4 - 0.5;
 
 /** Effort curve for the current time: 0 at rest, 1 at the peak of the turn. */
 function effortAt(t: number) {
@@ -56,80 +70,177 @@ function Crate({
 }
 
 /**
- * Wings beat fast while hovering and tuck in during the turn — the way a real
- * wing loads up before a change of direction.
+ * An angular wing, matching the artwork: a flat stepped hexagon, splayed
+ * almost horizontal rather than standing upright.
  */
 function Wing({ side }: { side: 1 | -1 }) {
   const ref = useRef<Mesh>(null);
+
+  const shape = useMemo(() => {
+    const s = new Shape();
+    s.moveTo(0, 0);
+    s.lineTo(0.5, 0.16);
+    s.lineTo(1.15, 0.1);
+    s.lineTo(1.45, -0.06);
+    s.lineTo(1.1, -0.24);
+    s.lineTo(0.42, -0.2);
+    s.lineTo(0, 0);
+    return s;
+  }, []);
 
   useFrame(({ clock }) => {
     if (!ref.current) return;
     const t = clock.elapsedTime;
     const e = effortAt(t);
-    const beat = Math.sin(t * (10 + e * 16)) * (0.28 + e * 0.16);
-    ref.current.rotation.z = side * (0.35 - e * 0.22 + beat);
-    ref.current.scale.setScalar(1 + e * 0.12);
+    const beat = Math.sin(t * (10 + e * 16)) * (0.3 + e * 0.18);
+    // Beats about the long axis, staying splayed out like the artwork.
+    ref.current.rotation.y = side * (0.15 + beat * 0.4);
+    ref.current.rotation.z = 0.12 + beat;
+    ref.current.scale.setScalar(1 + e * 0.1);
   });
 
   return (
-    <mesh ref={ref} position={[side * 0.62, 0.66, 0]} rotation={[0.35, 0, side * 0.3]}>
-      <planeGeometry args={[1.25, 0.5]} />
+    <mesh
+      ref={ref}
+      geometry={undefined}
+      position={[side * 0.52, 0.62, side * 0.1]}
+      rotation={[-1.15, 0, 0]}
+      scale={[side, 1, 1]}
+    >
+      <shapeGeometry args={[shape]} />
       <meshStandardMaterial
         color={SKY}
         side={DoubleSide}
         transparent
-        opacity={0.9}
-        roughness={0.2}
+        opacity={0.92}
+        roughness={0.3}
+        flatShading
       />
     </mesh>
   );
 }
 
-/** The mark itself, running the animation cycle. */
+/** The bee's face, sitting on the unstriped left panel as it does in the logo. */
+function Face() {
+  const x = -0.663; // just proud of the -X face
+
+  return (
+    <group position={[x, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>
+      {/* Eyes: black block with a sky inset at the base */}
+      {[-0.3, 0.22].map((ex, i) => (
+        <group key={ex} position={[ex, -0.16 - i * 0.12, 0]}>
+          <mesh>
+            <planeGeometry args={[0.24, 0.44]} />
+            <meshStandardMaterial color={BLACK} side={DoubleSide} />
+          </mesh>
+          <mesh position={[0, -0.1, 0.002]}>
+            <planeGeometry args={[0.14, 0.16]} />
+            <meshStandardMaterial color={SKY} side={DoubleSide} />
+          </mesh>
+        </group>
+      ))}
+
+      {/* Brow marks and the stub antenna on the panel edge */}
+      <mesh position={[-0.26, 0.3, 0]}>
+        <planeGeometry args={[0.2, 0.12]} />
+        <meshStandardMaterial color={BLACK} side={DoubleSide} />
+      </mesh>
+      <mesh position={[0.02, 0.16, 0]}>
+        <planeGeometry args={[0.22, 0.12]} />
+        <meshStandardMaterial color={BLACK} side={DoubleSide} />
+      </mesh>
+      <mesh position={[-0.55, 0.42, 0]} rotation={[0, 0, 0.2]}>
+        <planeGeometry args={[0.26, 0.1]} />
+        <meshStandardMaterial color={BLACK} side={DoubleSide} />
+      </mesh>
+
+      {/* The small white highlight from the artwork */}
+      <mesh position={[0.3, 0.02, 0]} rotation={[0, 0, 0.12]}>
+        <planeGeometry args={[0.16, 0.07]} />
+        <meshStandardMaterial color={WHITE} side={DoubleSide} />
+      </mesh>
+    </group>
+  );
+}
+
+/**
+ * The mark itself, running the animation cycle.
+ *
+ * Hard-edged box, not a rounded one — the artwork is flat and pixel-cut, and a
+ * bevel reads as a different, softer product. Faces are coloured individually
+ * so the top and right sit in the artwork's brown while the front panels stay
+ * yellow; that per-face split is what makes it read as the logo rather than as
+ * a generic yellow cube.
+ */
 function Parcel() {
   const group = useRef<Group>(null);
   const lid = useRef<Mesh>(null);
 
+  // BoxGeometry face order: +X, -X, +Y, -Y, +Z, -Z
+  const faces = useMemo(
+    () => [SHADE, YELLOW, SHADE, SHADE, YELLOW, SHADE],
+    [],
+  );
+
   useFrame(({ clock }) => {
     if (!group.current) return;
     const t = clock.elapsedTime;
+    const e = effortAt(t);
 
-    const beats = t / BEAT;
-    const step = Math.floor(beats);
-    const phase = beats - step;
+    // Slow look left and right, so the face stays toward the viewer instead of
+    // turning away. A full spin would hide the eyes for half of every cycle.
+    const look = Math.sin(t * 0.55) * 0.42;
 
-    const p = Math.min(phase / TURN, 1);
-    const eased = 1 - Math.pow(1 - p, 3);
-    const e = Math.sin(p * Math.PI);
+    // Wings drive a figure-eight drift, the way a hovering insect never holds
+    // still — the horizontal term runs at half the vertical rate.
+    const driftX = Math.sin(t * 0.9) * 0.07;
+    const driftZ = Math.sin(t * 0.45) * 0.05;
 
-    group.current.rotation.y = (step + eased) * (Math.PI / 2) + e * 0.075;
-    group.current.rotation.z = -e * 0.13;
-    group.current.rotation.x = e * 0.06;
-    group.current.position.y = 1.5 + Math.sin(t * 1.15) * 0.07 + e * 0.34;
+    group.current.rotation.y = FACING + look + e * 0.22;
+    // Tips into the hop, and banks slightly into the direction of the look.
+    group.current.rotation.z = -look * 0.16 - e * 0.12;
+    group.current.rotation.x = e * 0.1;
 
-    if (lid.current) lid.current.position.y = 0.665 + e * 0.07;
+    group.current.position.x = driftX;
+    group.current.position.z = driftZ;
+    group.current.position.y = 1.5 + Math.sin(t * 1.4) * 0.06 + e * 0.42;
+
+    // The lid lifts on the hop, as if the box is carrying something.
+    if (lid.current) lid.current.position.y = 0.667 + e * 0.08;
   });
 
   return (
     <group ref={group}>
-      <RoundedBox args={[1.3, 1.3, 1.3]} radius={0.07} smoothness={4}>
-        <meshStandardMaterial color={YELLOW} roughness={0.38} metalness={0.18} />
-      </RoundedBox>
+      <mesh>
+        <boxGeometry args={[1.3, 1.3, 1.3]} />
+        {faces.map((c, i) => (
+          <meshStandardMaterial
+            key={i}
+            attach={`material-${i}`}
+            color={c}
+            roughness={0.62}
+            metalness={0.04}
+            flatShading
+          />
+        ))}
+      </mesh>
 
-      {/* Stripes */}
-      {[0.32, -0.32].map((x) => (
+      {/* Bee stripes: bands wrapping the box over the top and down the front,
+          exactly as they wrap in the artwork. */}
+      {[0.3, -0.34].map((x) => (
         <mesh key={x} position={[x, 0, 0]}>
-          <boxGeometry args={[0.22, 1.33, 1.33]} />
-          <meshStandardMaterial color={BLACK} roughness={0.55} />
+          <boxGeometry args={[0.2, 1.315, 1.315]} />
+          <meshStandardMaterial color={BLACK} roughness={0.6} flatShading />
         </mesh>
       ))}
 
-      {/* Tape across the lid — lifts a little on each beat */}
-      <mesh ref={lid} position={[0, 0.665, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[0.26, 1.32]} />
+      {/* Tape seam across the lid */}
+      <mesh ref={lid} position={[0, 0.667, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[0.22, 1.3]} />
         <meshStandardMaterial color={BLACK} roughness={0.6} side={DoubleSide} />
       </mesh>
 
+      <Face />
       <Wing side={1} />
       <Wing side={-1} />
     </group>
