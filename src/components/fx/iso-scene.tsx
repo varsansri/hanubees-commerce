@@ -69,6 +69,43 @@ function Crate({
 }
 
 /**
+ * Raised relief for the face.
+ *
+ * The texture already draws the eyes and brow strokes; these sit a hair proud
+ * of the panel so they catch the light and throw an edge, which is the one
+ * thing a flat texture cannot do. Positions are the same measured face-local
+ * coordinates the texture is painted from, mapped onto the +Z panel.
+ */
+function FaceRelief() {
+  const W = 1.3;
+  const Hh = 1.29;
+  const z = 1.45 / 2 + 0.008;
+  // u,v are the measured face coordinates; convert to panel-local x,y.
+  const X = (u: number) => -W / 2 + u * W;
+  const Yv = (v: number) => Hh / 2 - v * Hh;
+  const marks: [number, number, number, number][] = [
+    [0.0, 0.49, 0.23, 0.92], // left eye
+    [0.52, 0.54, 0.84, 1.0], // right eye
+    [0.12, 0.14, 0.32, 0.42], // brow
+    [0.36, 0.15, 0.59, 0.44], // brow
+  ];
+  return (
+    <group>
+      {marks.map(([u0, v0, u1, v1], i) => {
+        const w = (u1 - u0) * W;
+        const h = (v0 - v1) * Hh * -1;
+        return (
+          <mesh key={i} position={[(X(u0) + X(u1)) / 2, (Yv(v0) + Yv(v1)) / 2, z]}>
+            <boxGeometry args={[w, Math.abs(h), 0.016]} />
+            <meshStandardMaterial color="#302020" roughness={0.6} />
+          </mesh>
+        );
+      })}
+    </group>
+  );
+}
+
+/**
  * A wing, cut straight out of the artwork as an alpha sprite rather than
  * approximated with geometry — the stepped silhouette is too specific to
  * redraw by hand.
@@ -186,6 +223,8 @@ function Parcel() {
       </mesh>
 
       {/* Sprite aspects come from the extracted files: 1.30 and 2.38 */}
+      <FaceRelief />
+
       <Wing map={wingBack} side={1} size={[1.5, 1.15]} position={[-0.18, 0.74, -0.7]} />
       <Wing map={wingFront} side={-1} size={[1.85, 0.78]} position={[0.78, 0.6, 0.34]} />
 
