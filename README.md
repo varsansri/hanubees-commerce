@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hanubees Commerce
 
-## Getting Started
+A multi-tenant commerce platform — merchants get a storefront and a full admin
+dashboard, the way Shopify works. Built by **Hanubees Technologies**.
 
-First, run the development server:
+- **Platform** — `hanubees.com`
+- **Merchant storefronts** — `<store>.hanubees.com`, plus custom domains
+- **Merchant admin** — `hanubees.com/admin/<store>`
+
+## Status
+
+**Design phase.** The whole product surface is built and deployable; the
+persistence layer is deliberately not chosen yet. Every read goes through
+`src/lib/data/index.ts`, which today resolves against deterministic in-memory
+seed data. Swapping those function bodies for SQL is the entire backend
+migration — no page or component changes.
+
+What exists:
+
+| Area | Routes |
+|---|---|
+| Marketing site | `/` |
+| Store picker | `/admin` |
+| Merchant admin | `/admin/[store]` — home, orders, order detail, products, product detail, customers, analytics, discounts, settings |
+| Storefront | `/store/[handle]` — catalogue, product detail, cart |
+
+Not built yet: authentication, checkout and payments, real cart state, and
+writes of any kind. The admin's inputs and buttons are presentational.
+
+## Stack
+
+Next.js 16 (App Router, Turbopack) · React 19 · TypeScript · Tailwind v4 ·
+deployed on Vercel.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev     # http://localhost:3000
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+To view a tenant subdomain locally, use `bloom.localhost:3000` — `src/proxy.ts`
+resolves it the same way it resolves `bloom.hanubees.com`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## How it is put together
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Tenant resolution** — `src/proxy.ts` (Next 16 renamed Middleware to Proxy)
+maps `acme.hanubees.com/x` to `/store/acme/x`. Reserved labels (`www`, `admin`,
+`api`, …) are never treated as stores. Vercel needs `*.hanubees.com` attached to
+the project for this to receive traffic.
 
-## Learn More
+**The data seam** — `src/lib/data/index.ts`. Every function is `async` and takes
+a `storeId`, so the tenant guard has a place to live when this becomes SQL.
+`src/lib/data/seed.ts` generates the fixtures from a fixed-seed PRNG, so builds
+are byte-identical and nothing drifts between server and client.
 
-To learn more about Next.js, take a look at the following resources:
+**Money** is stored in minor units (paise) everywhere and only formatted at the
+edge, in `src/lib/format.ts`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Design tokens** live in `src/app/globals.css` as CSS custom properties, with
+light and dark values that a `data-theme` stamp can override in both
+directions. Admin chrome is always Hanubees honey; a storefront scopes its
+merchant's accent over `--accent`, so one set of components renders every brand.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Charts** (`src/components/charts.tsx`) each plot a single measure, so colour
+does no identity work — magnitude is length or position, and the honey mark
+colour is validated at ≥3:1 against both the light and dark surface. Deltas ship
+an arrow glyph alongside the status colour, and the analytics page repeats its
+charts as a table.
 
-## Deploy on Vercel
+**Product imagery** is generated gradient swatches, not stock photography —
+there is nothing here to licence-clear before launch, and no placeholder that
+could accidentally ship as real.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Next decisions
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Persistence + auth (Postgres via Neon or Supabase; row-level tenant isolation).
+2. Cart and checkout state, then payments (Razorpay for UPI/COD).
+3. Writes: product editing, fulfilment, discount creation.
