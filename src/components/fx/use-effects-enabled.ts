@@ -3,44 +3,50 @@
 import { useEffect, useState } from "react";
 
 /**
- * Whether this visitor should get the WebGL effects at all.
+ * How much of the hero's WebGL this device should run.
  *
- * Three gates, all of them real: reduced-motion is a stated preference, a
- * coarse pointer on a narrow screen usually means a phone GPU and a metered
- * connection, and no WebGL means no effect regardless. Every effect renders
- * over a static fallback, so a `false` here costs the visitor nothing but the
- * animation.
+ *   "off"   reduced motion, or no WebGL at all → static composition
+ *   "lite"  phones and coarse pointers → the logo animation only
+ *   "full"  everything: animation, glass badge, liquid metal
+ *
+ * The logo animation is the point of the hero, so it runs on phones too. What
+ * "lite" drops is the *extra* WebGL contexts — the glass badge uploads a
+ * texture every frame and liquid metal is a third context, and three at once on
+ * a mid-range phone is where it stops being worth it.
  */
-export function useEffectsEnabled(): boolean {
-  const [enabled, setEnabled] = useState(false);
+export type EffectTier = "off" | "lite" | "full";
+
+export function useEffectTier(): EffectTier {
+  const [tier, setTier] = useState<EffectTier>("off");
 
   useEffect(() => {
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const small = window.matchMedia("(max-width: 640px)");
+    const coarse = window.matchMedia("(pointer: coarse)");
 
     const evaluate = () => {
-      if (motion.matches || small.matches) return setEnabled(false);
+      // A stated preference always wins.
+      if (motion.matches) return setTier("off");
 
-      // Cheap capability probe — a lost context here means the effect would
-      // have failed anyway.
+      // Cheap capability probe — no context here means the effect would fail.
       const canvas = document.createElement("canvas");
       const gl =
         canvas.getContext("webgl2") ??
         canvas.getContext("webgl") ??
         canvas.getContext("experimental-webgl");
-      setEnabled(Boolean(gl));
+      if (!gl) return setTier("off");
+
+      setTier(small.matches || coarse.matches ? "lite" : "full");
     };
 
     evaluate();
-    motion.addEventListener("change", evaluate);
-    small.addEventListener("change", evaluate);
+    for (const q of [motion, small, coarse]) q.addEventListener("change", evaluate);
     return () => {
-      motion.removeEventListener("change", evaluate);
-      small.removeEventListener("change", evaluate);
+      for (const q of [motion, small, coarse]) q.removeEventListener("change", evaluate);
     };
   }, []);
 
-  return enabled;
+  return tier;
 }
 
 /** True once the element has been near the viewport at least once. */

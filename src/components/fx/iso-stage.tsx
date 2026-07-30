@@ -4,23 +4,22 @@ import dynamic from "next/dynamic";
 import { useRef } from "react";
 import { Logo } from "../logo";
 import { LiquidGlass } from "./liquid-glass";
-import { useEffectsEnabled, useInView } from "./use-effects-enabled";
+import { useEffectTier, useInView } from "./use-effects-enabled";
 
 /**
  * The hero stage — the one place on the site that runs WebGL.
  *
- * All four effect libraries are concentrated here, each doing a different job
- * so none of them is decoration:
+ * All four effect libraries are concentrated here, each doing a different job:
  *
  *   - @shadergradient/react  lights the stage behind the scene
  *   - @react-three/fiber     animates the logo itself, in true isometric
  *   - dashersw/liquid-glass  the badge, refracting the live gradient behind it
  *   - @paper-design/shaders  the flat mark inside that badge, in liquid metal
  *
- * Nothing else on the site loads WebGL. Storefronts and the admin are plain.
- *
- * Without WebGL the stage is a white block with the flat logo — a finished
- * composition, not a hole where an effect should be.
+ * On phones ("lite") the logo animation and its gradient still run — that is
+ * the point of the hero — while the glass badge and liquid metal step aside,
+ * because each is another WebGL context and the badge re-uploads a texture
+ * every frame. The badge is still there, just drawn in plain CSS.
  */
 
 const ShaderGradientCanvas = dynamic(
@@ -40,9 +39,11 @@ const LiquidMetal = dynamic(
 export function IsoStage({ className = "" }: { className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const gradientRef = useRef<HTMLDivElement>(null);
-  const enabled = useEffectsEnabled();
+  const tier = useEffectTier();
   const inView = useInView(ref);
-  const live = enabled && inView;
+
+  const live = tier !== "off" && inView;
+  const full = tier === "full" && inView;
 
   return (
     <div
@@ -53,7 +54,7 @@ export function IsoStage({ className = "" }: { className?: string }) {
         <div ref={gradientRef} className="absolute inset-0" aria-hidden>
           <ShaderGradientCanvas
             style={{ position: "absolute", inset: 0 }}
-            pixelDensity={1}
+            pixelDensity={tier === "lite" ? 0.75 : 1}
             fov={40}
           >
             <ShaderGradient
@@ -81,7 +82,7 @@ export function IsoStage({ className = "" }: { className?: string }) {
 
       <div className="relative aspect-[4/3] w-full sm:aspect-[16/11]">
         {live ? (
-          <IsoScene />
+          <IsoScene lite={tier === "lite"} />
         ) : (
           <div className="flex size-full items-center justify-center">
             <Logo size={150} priority />
@@ -89,10 +90,10 @@ export function IsoStage({ className = "" }: { className?: string }) {
         )}
       </div>
 
-      {/* Glass badge, pinned to the stage floor. It refracts the gradient, and
-          holds the flat mark rendered in liquid metal. */}
-      {live ? (
-        <div className="pointer-events-none absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-auto">
+      {/* Badge on the stage floor: real glass with a metal mark on desktop,
+          the same badge in plain CSS everywhere else. */}
+      <div className="pointer-events-none absolute bottom-3 left-3 sm:bottom-4 sm:left-4">
+        {full ? (
           <LiquidGlass sourceRef={gradientRef} borderRadius={14} tintOpacity={0.2}>
             <div className="flex items-center gap-2.5 px-3 py-2">
               <span className="relative size-8 shrink-0">
@@ -116,8 +117,15 @@ export function IsoStage({ className = "" }: { className?: string }) {
               </span>
             </div>
           </LiquidGlass>
-        </div>
-      ) : null}
+        ) : (
+          <span className="iso-block-sm flex items-center gap-2 bg-iso-white/85 px-2.5 py-1.5 backdrop-blur-sm">
+            <Logo size={20} />
+            <span className="text-[13px] font-semibold tracking-tight text-iso-black">
+              Hanubees
+            </span>
+          </span>
+        )}
+      </div>
     </div>
   );
 }

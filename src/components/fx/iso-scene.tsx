@@ -219,7 +219,14 @@ function Stage({ spin }: { spin: number }) {
   );
 }
 
-export default function IsoScene({ scrollSpin = true }: { scrollSpin?: boolean }) {
+export default function IsoScene({
+  scrollSpin = true,
+  lite = false,
+}: {
+  scrollSpin?: boolean;
+  /** Phone tier: fewer pixels and one less light, same animation. */
+  lite?: boolean;
+}) {
   const [spin, setSpin] = useState(0.5);
 
   useEffect(() => {
@@ -244,7 +251,7 @@ export default function IsoScene({ scrollSpin = true }: { scrollSpin?: boolean }
   return (
     <Canvas
       orthographic
-      dpr={[1, 1.6]}
+      dpr={lite ? [1, 1.25] : [1, 1.6]}
       camera={{ position: [8, 6.5, 8], zoom: 78, near: -50, far: 100 }}
       gl={{ alpha: true, antialias: true }}
       style={{ background: "transparent" }}
@@ -252,7 +259,9 @@ export default function IsoScene({ scrollSpin = true }: { scrollSpin?: boolean }
       <ambientLight intensity={0.85} />
       <directionalLight position={[6, 9, 5]} intensity={2.2} />
       <directionalLight position={[-6, 3, -4]} intensity={0.6} color={SKY} />
-      <directionalLight position={[0, -4, 3]} intensity={0.3} color={YELLOW} />
+      {lite ? null : (
+        <directionalLight position={[0, -4, 3]} intensity={0.3} color={YELLOW} />
+      )}
       <Stage spin={spin} />
     </Canvas>
   );
