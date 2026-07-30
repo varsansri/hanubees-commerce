@@ -1,26 +1,208 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ==========================================================================
+   Hanubees Commerce — design tokens
+   Warm, honey-toned neutrals. Accent is spent sparingly: actions, focus, key data.
+   ========================================================================== */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+:root {
+  /* Surfaces — warm greys, never pure white/black */
+  --bg: #fbfaf7;
+  --surface: #ffffff;
+  --surface-2: #f5f3ee;
+  --surface-3: #ece8e0;
+
+  /* Text */
+  --text: #16130e;
+  --text-2: #5c554a;
+  --text-3: #8b8377;
+  --text-inverse: #fbfaf7;
+
+  /* Lines */
+  --border: #e5e0d6;
+  --border-strong: #d3ccbe;
+
+  /* Brand — honey */
+  --accent: #b8791a;
+  --accent-hover: #9d6613;
+  --accent-soft: #fdf3e0;
+  --accent-border: #f0d9a8;
+  --accent-text: #7a4d0c;
+
+  /* Status */
+  --success: #1a7f52;
+  --success-soft: #e6f4ec;
+  --warning: #a16207;
+  --warning-soft: #fdf3e0;
+  --danger: #b3261e;
+  --danger-soft: #fceceb;
+  --info: #1f5fa8;
+  --info-soft: #e8f0fa;
+
+  /* Elevation */
+  --shadow-sm: 0 1px 2px rgb(24 20 14 / 0.06);
+  --shadow: 0 1px 3px rgb(24 20 14 / 0.08), 0 4px 12px rgb(24 20 14 / 0.05);
+  --shadow-lg: 0 8px 32px rgb(24 20 14 / 0.12);
+
+  --radius: 0.625rem;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bg: #100e0a;
+    --surface: #1a1712;
+    --surface-2: #221e18;
+    --surface-3: #2c271f;
+
+    --text: #f4f1ea;
+    --text-2: #a89f90;
+    --text-3: #7c7466;
+    --text-inverse: #16130e;
+
+    --border: #2f2a22;
+    --border-strong: #423b30;
+
+    --accent: #e8a93c;
+    --accent-hover: #f2ba55;
+    --accent-soft: #2a2114;
+    --accent-border: #4a3a1c;
+    --accent-text: #f0c06a;
+
+    --success: #4ac088;
+    --success-soft: #12261c;
+    --warning: #e0a83a;
+    --warning-soft: #2a2114;
+    --danger: #ef6b60;
+    --danger-soft: #2c1614;
+    --info: #6aa5e8;
+    --info-soft: #141f2c;
+
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow: 0 1px 3px rgb(0 0 0 / 0.5), 0 4px 12px rgb(0 0 0 / 0.3);
+    --shadow-lg: 0 8px 32px rgb(0 0 0 / 0.55);
   }
 }
 
+/* Manual theme toggle — must beat the media query in both directions */
+:root[data-theme="light"] {
+  --bg: #fbfaf7;
+  --surface: #ffffff;
+  --surface-2: #f5f3ee;
+  --surface-3: #ece8e0;
+  --text: #16130e;
+  --text-2: #5c554a;
+  --text-3: #8b8377;
+  --text-inverse: #fbfaf7;
+  --border: #e5e0d6;
+  --border-strong: #d3ccbe;
+  --accent: #b8791a;
+  --accent-hover: #9d6613;
+  --accent-soft: #fdf3e0;
+  --accent-border: #f0d9a8;
+  --accent-text: #7a4d0c;
+  --success: #1a7f52;
+  --success-soft: #e6f4ec;
+  --warning: #a16207;
+  --warning-soft: #fdf3e0;
+  --danger: #b3261e;
+  --danger-soft: #fceceb;
+  --info: #1f5fa8;
+  --info-soft: #e8f0fa;
+  --shadow-sm: 0 1px 2px rgb(24 20 14 / 0.06);
+  --shadow: 0 1px 3px rgb(24 20 14 / 0.08), 0 4px 12px rgb(24 20 14 / 0.05);
+  --shadow-lg: 0 8px 32px rgb(24 20 14 / 0.12);
+}
+
+:root[data-theme="dark"] {
+  --bg: #100e0a;
+  --surface: #1a1712;
+  --surface-2: #221e18;
+  --surface-3: #2c271f;
+  --text: #f4f1ea;
+  --text-2: #a89f90;
+  --text-3: #7c7466;
+  --text-inverse: #16130e;
+  --border: #2f2a22;
+  --border-strong: #423b30;
+  --accent: #e8a93c;
+  --accent-hover: #f2ba55;
+  --accent-soft: #2a2114;
+  --accent-border: #4a3a1c;
+  --accent-text: #f0c06a;
+  --success: #4ac088;
+  --success-soft: #12261c;
+  --warning: #e0a83a;
+  --warning-soft: #2a2114;
+  --danger: #ef6b60;
+  --danger-soft: #2c1614;
+  --info: #6aa5e8;
+  --info-soft: #141f2c;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow: 0 1px 3px rgb(0 0 0 / 0.5), 0 4px 12px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 8px 32px rgb(0 0 0 / 0.55);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+
+  --color-text: var(--text);
+  --color-text-2: var(--text-2);
+  --color-text-3: var(--text-3);
+  --color-text-inverse: var(--text-inverse);
+
+  --color-line: var(--border);
+  --color-line-strong: var(--border-strong);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-border: var(--accent-border);
+  --color-accent-text: var(--accent-text);
+
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  --radius-base: var(--radius);
+
+  --shadow-card: var(--shadow);
+}
+
+* {
+  border-color: var(--border);
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Tabular figures wherever numbers are compared down a column */
+.nums {
+  font-variant-numeric: tabular-nums;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
