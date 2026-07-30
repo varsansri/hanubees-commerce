@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { StoreHero } from "@/components/fx/store-hero";
 import { getStore, listStores, listStorefrontProducts } from "@/lib/data";
 import { money } from "@/lib/format";
 
@@ -35,11 +36,7 @@ export default async function StorefrontHome({
   return (
     <>
       <section className="mx-auto max-w-6xl px-4 pt-10">
-        <div
-          className="relative overflow-hidden rounded-2xl border border-line px-6 py-16 sm:px-12 sm:py-24"
-          style={{ background: store.theme.heroImage }}
-        >
-          <div className="max-w-lg">
+        <StoreHero accent={store.theme.accent} fallback={store.theme.heroImage}>
             <h1 className="text-3xl font-semibold leading-tight tracking-tight text-black sm:text-5xl">
               {store.tagline}
             </h1>
@@ -53,8 +50,7 @@ export default async function StorefrontHome({
             >
               Shop the collection
             </Link>
-          </div>
-        </div>
+        </StoreHero>
       </section>
 
       <section className="mx-auto max-w-6xl px-4 pt-8">

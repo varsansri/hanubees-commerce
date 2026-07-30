@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LiquidMark } from "@/components/fx/liquid-mark";
 import { BeeMark, CheckIcon } from "@/components/icons";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { listStores } from "@/lib/data";
@@ -102,17 +103,20 @@ export default async function Landing() {
       </header>
 
       {/* ---------------------------------------------------------------- hero */}
-      <section className="mx-auto w-full max-w-6xl px-4 pb-8 pt-20 text-center sm:pt-28">
-        <h1 className="rise mx-auto max-w-3xl text-4xl font-semibold leading-[1.1] tracking-tight sm:text-6xl">
+      <section className="mx-auto w-full max-w-6xl px-4 pb-8 pt-16 text-center sm:pt-20">
+        <div className="rise mb-6">
+          <LiquidMark />
+        </div>
+        <h1 className="rise rise-1 mx-auto max-w-3xl text-4xl font-semibold leading-[1.1] tracking-tight sm:text-6xl">
           Commerce for people who
           <br className="hidden sm:block" /> actually make things
         </h1>
-        <p className="rise rise-1 mx-auto mt-5 max-w-xl text-[17px] leading-relaxed text-text-2">
+        <p className="rise rise-2 mx-auto mt-5 max-w-xl text-[17px] leading-relaxed text-text-2">
           Launch a storefront, take orders, and run the whole business from one
           admin. No plugin maze, no per-feature pricing. Free while you find your
           first 50 customers.
         </p>
-        <div className="rise rise-2 mt-8 flex flex-wrap items-center justify-center gap-3">
+        <div className="rise rise-3 mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link
             href="/admin"
             className="pressable inline-flex h-11 items-center rounded-full bg-accent px-6 text-sm font-medium text-white"
@@ -130,7 +134,7 @@ export default async function Landing() {
 
       {/* The product itself is the hero image */}
       <section className="mx-auto w-full max-w-6xl px-4 pt-6">
-        <div className="rise rise-3 overflow-hidden rounded-2xl border border-line bg-surface shadow-[var(--shadow-lg)]">
+        <div className="rise rise-4 overflow-hidden rounded-2xl border border-line bg-surface shadow-[var(--shadow-lg)]">
           <div className="flex items-center gap-1.5 border-b border-line bg-surface-2 px-4 py-2.5">
             <span className="size-2.5 rounded-full bg-[var(--border-strong)]" />
             <span className="size-2.5 rounded-full bg-[var(--border-strong)]" />
