@@ -125,23 +125,24 @@ function Wing({
 function Parcel() {
   const group = useRef<Group>(null);
 
-  const [head, top, sideTex, plain, wingBack, wingFront] = useTexture([
+  const [head, top, sideTex, plain, wingBack, wingFront, antenna] = useTexture([
     "/face-left.png",
     "/face-top.png",
     "/face-right.png",
     "/face-plain.png",
     "/wing-back.png",
     "/wing-front.png",
+    "/antenna.png",
   ]);
 
   useMemo(() => {
-    for (const t of [head, top, sideTex, plain, wingBack, wingFront]) {
+    for (const t of [head, top, sideTex, plain, wingBack, wingFront, antenna]) {
       t.magFilter = NearestFilter;
       t.minFilter = NearestFilter;
       t.generateMipmaps = false;
       t.colorSpace = SRGBColorSpace;
     }
-  }, [head, top, sideTex, plain, wingBack, wingFront]);
+  }, [head, top, sideTex, plain, wingBack, wingFront, antenna]);
 
   // BoxGeometry face order: +X, -X, +Y, -Y, +Z, -Z
   const faces = [sideTex, plain, top, plain, head, plain];
@@ -169,7 +170,10 @@ function Parcel() {
   return (
     <group ref={group}>
       <mesh>
-        <boxGeometry args={[1.3, 1.3, 1.3]} />
+        {/* Not a cube. Measured off the artwork: the head panel is 291px
+            wide, the box stands 288px, and it runs 325px deep — about 12%
+            deeper than it is wide. */}
+        <boxGeometry args={[1.3, 1.29, 1.45]} />
         {faces.map((tex, i) => (
           <meshStandardMaterial
             key={i}
@@ -182,8 +186,21 @@ function Parcel() {
       </mesh>
 
       {/* Sprite aspects come from the extracted files: 1.30 and 2.38 */}
-      <Wing map={wingBack} side={1} size={[1.5, 1.15]} position={[-0.15, 0.72, -0.62]} />
-      <Wing map={wingFront} side={-1} size={[1.85, 0.78]} position={[0.72, 0.6, 0.28]} />
+      <Wing map={wingBack} side={1} size={[1.5, 1.15]} position={[-0.18, 0.74, -0.7]} />
+      <Wing map={wingFront} side={-1} size={[1.85, 0.78]} position={[0.78, 0.6, 0.34]} />
+
+      {/* The antenna sticks out past the box silhouette, so it can never be
+          part of a face texture — it is its own sprite on the head's edge. */}
+      <mesh position={[-0.62, 0.34, 0.735]} rotation={[0, 0.2, 0.22]}>
+        <planeGeometry args={[0.42, 0.4]} />
+        <meshBasicMaterial
+          map={antenna}
+          transparent
+          side={DoubleSide}
+          alphaTest={0.4}
+          toneMapped={false}
+        />
+      </mesh>
     </group>
   );
 }
