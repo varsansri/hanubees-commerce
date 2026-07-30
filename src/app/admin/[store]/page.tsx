@@ -18,7 +18,7 @@ import {
   listOrders,
   listProducts,
 } from "@/lib/data";
-import { money, number, percent, relative } from "@/lib/format";
+import { money, moneyWhole, number, percent, relative } from "@/lib/format";
 
 export default async function StoreHome({
   params,
@@ -64,7 +64,7 @@ export default async function StoreHome({
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatTile
           label="Revenue"
-          value={money(metrics.revenue.value, store.currency)}
+          value={moneyWhole(metrics.revenue.value, store.currency)}
           change={metrics.revenue.change}
           series={metrics.revenueSeries}
         />

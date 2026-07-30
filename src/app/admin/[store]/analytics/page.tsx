@@ -4,7 +4,7 @@ import { BarList, TrendChart } from "@/components/charts";
 import { Card, CardHeader, PageHeader } from "@/components/ui/card";
 import { Table, TableWrap, Td, Th, Tr } from "@/components/ui/table";
 import { getMetrics, getStore } from "@/lib/data";
-import { money, number, percent } from "@/lib/format";
+import { money, moneyWhole, number, percent } from "@/lib/format";
 
 export default async function AnalyticsPage({
   params,
@@ -26,13 +26,13 @@ export default async function AnalyticsPage({
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatTile
           label="Revenue"
-          value={money(m.revenue.value, store.currency)}
+          value={moneyWhole(m.revenue.value, store.currency)}
           change={m.revenue.change}
           series={m.revenueSeries}
         />
         <StatTile
           label="Average order value"
-          value={money(Math.round(aov), store.currency)}
+          value={moneyWhole(aov, store.currency)}
           change={0.081}
         />
         <StatTile

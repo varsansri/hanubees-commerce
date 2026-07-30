@@ -23,7 +23,12 @@ export function money(minor: number, currency: Currency = "INR"): string {
   }).format(minor / 100);
 }
 
-/** Compact form for stat tiles, where column width is tight. */
+/** Headline figures read better without paise — round before formatting. */
+export function moneyWhole(minor: number, currency: Currency = "INR"): string {
+  return money(Math.round(minor / 100) * 100, currency);
+}
+
+/** Compact form for chart axes, where label width is tight. */
 export function moneyCompact(minor: number, currency: Currency = "INR"): string {
   const major = minor / 100;
   const s = SYMBOLS[currency];
