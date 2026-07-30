@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useRef } from "react";
-import { BeeMark } from "../icons";
+import { Logo } from "../logo";
 import { useEffectsEnabled, useInView } from "./use-effects-enabled";
 
 /**
@@ -36,13 +36,13 @@ export function LiquidMark({ size = 132 }: { size?: number }) {
       aria-label="Hanubees"
       role="img"
     >
-      <span className="absolute inset-0 flex items-center justify-center text-accent">
-        <BeeMark className="size-full" />
+      <span className="absolute inset-0 flex items-center justify-center">
+        <Logo size={size} priority />
       </span>
 
       {enabled && inView ? (
         <LiquidMetal
-          image="/bee-mark.svg"
+          image="/bee-square.png"
           className="absolute inset-0 size-full"
           colorBack="#00000000"
           colorTint="#e8a93c"

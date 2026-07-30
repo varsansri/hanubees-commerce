@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { LiquidMark } from "@/components/fx/liquid-mark";
-import { BeeMark, CheckIcon } from "@/components/icons";
+import { CheckIcon } from "@/components/icons";
+import { Wordmark, Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { listStores } from "@/lib/data";
 
@@ -67,11 +68,8 @@ export default async function Landing() {
     <div className="flex min-h-full flex-col">
       <header className="sticky top-0 z-30 border-b border-line bg-bg/85 backdrop-blur-sm">
         <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
-          <Link href="/" className="flex items-center gap-2 text-accent">
-            <BeeMark className="size-7" />
-            <span className="text-[15px] font-semibold tracking-tight text-text">
-              Hanubees
-            </span>
+          <Link href="/">
+            <Wordmark size={26} priority />
           </Link>
           <nav className="ml-6 hidden items-center gap-5 text-[13px] text-text-2 md:flex">
             <a href="#features" className="transition-colors hover:text-text">
@@ -287,10 +285,7 @@ export default async function Landing() {
       <footer className="mt-auto border-t border-line">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-6 text-[13px] text-text-3">
           <span className="flex items-center gap-2">
-            <span className="text-accent">
-              <BeeMark className="size-5" />
-            </span>
-            © {new Date().getFullYear()} Hanubees
+            <Logo size={18} />© {new Date().getFullYear()} Hanubees
           </span>
           <span>Made in Coimbatore</span>
         </div>

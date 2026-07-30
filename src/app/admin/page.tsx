@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BeeMark } from "@/components/icons";
+import { Wordmark } from "@/components/logo";
 import { Badge } from "@/components/ui/badge";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { getMetrics, listStores } from "@/lib/data";
@@ -16,11 +16,8 @@ export default async function AdminIndex() {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-12">
       <header className="flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 text-accent">
-          <BeeMark className="size-7" />
-          <span className="text-[15px] font-semibold tracking-tight text-text">
-            Hanubees
-          </span>
+        <Link href="/">
+          <Wordmark size={26} />
         </Link>
         <ThemeToggle />
       </header>

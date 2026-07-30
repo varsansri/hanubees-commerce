@@ -173,26 +173,3 @@ export const EmptyIcon = (p: SVGProps<SVGSVGElement>) => (
     <path d="M4.5 6.5 3 13v6h18v-6l-1.5-6.5A2 2 0 0 0 17.6 5H6.4a2 2 0 0 0-1.9 1.5Z" />
   </Icon>
 );
-
-/** The bee mark — the whole brand identity in one glyph. */
-export function BeeMark({ className = "size-6" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} aria-hidden>
-      <path
-        d="M12 3.5c2.2 0 3.6 1.1 3.6 2.4S14.2 8 12 8 8.4 7.2 8.4 5.9 9.8 3.5 12 3.5Z"
-        fill="currentColor"
-      />
-      <path
-        d="M6.5 10.2c0-2 2.5-3.2 5.5-3.2s5.5 1.2 5.5 3.2c0 4.6-2.5 10.3-5.5 10.3S6.5 14.8 6.5 10.2Z"
-        fill="currentColor"
-        opacity="0.55"
-      />
-      <path
-        d="M6.9 11.8h10.2M7.6 15h8.8M9.2 18.2h5.6"
-        stroke="var(--surface)"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}

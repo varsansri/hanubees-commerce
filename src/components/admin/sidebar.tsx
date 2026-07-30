@@ -6,7 +6,6 @@ import { useState } from "react";
 import type { Store } from "@/lib/types";
 import {
   AnalyticsIcon,
-  BeeMark,
   ChevronIcon,
   CloseIcon,
   CustomersIcon,
@@ -17,6 +16,7 @@ import {
   SettingsIcon,
   StorefrontIcon,
 } from "../icons";
+import { Logo } from "../logo";
 
 const NAV = [
   { href: "", label: "Home", Icon: HomeIcon },
@@ -125,9 +125,7 @@ function StoreSwitcher({ store, stores }: { store: Store; stores: Store[] }) {
         className="pressable flex w-full items-center gap-2.5 rounded-[var(--radius)] border border-line px-2.5 py-2 text-left [transition:background-color_140ms_var(--ease-out),transform_140ms_var(--ease-out)] hover:bg-surface-2"
         aria-expanded={open}
       >
-        <span className="text-accent">
-          <BeeMark className="size-6" />
-        </span>
+        <Logo size={22} />
         <span className="min-w-0 flex-1">
           <span className="block truncate text-[13px] font-semibold">{store.name}</span>
           <span className="block truncate text-[11px] text-text-3">

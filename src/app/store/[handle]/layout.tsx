@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { CartIcon, SearchIcon } from "@/components/icons";
+import { Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { getStore } from "@/lib/data";
 
@@ -112,9 +113,13 @@ export default async function StorefrontLayout({
             <span>
               © {new Date().getFullYear()} {store.name}
             </span>
-            <span>
-              Powered by{" "}
-              <Link href="/" className="text-text-2 hover:text-text">
+            <span className="flex items-center gap-1.5">
+              Powered by
+              <Link
+                href="/"
+                className="inline-flex items-center gap-1 text-text-2 hover:text-text"
+              >
+                <Logo size={16} />
                 Hanubees
               </Link>
             </span>
