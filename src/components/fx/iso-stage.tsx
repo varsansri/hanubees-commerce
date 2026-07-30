@@ -69,7 +69,7 @@ export function IsoStage({ className = "" }: { className?: string }) {
       ) : null}
 
       <div className="relative flex aspect-[4/3] w-full items-center justify-center p-6 sm:aspect-[16/11]">
-        <Bee2D size={340} priority className="max-w-[78%]" />
+        <Bee2D size={340} className="max-w-[78%]" />
       </div>
 
       <span className="iso-block-sm absolute bottom-3 left-3 flex items-center gap-2 bg-iso-white/85 px-2.5 py-1.5 text-[13px] font-semibold tracking-tight text-iso-black backdrop-blur-sm sm:bottom-4 sm:left-4">

@@ -354,76 +354,104 @@ body {
 }
 
 /* ==========================================================================
-   The bee, animated in 2D
-   Layers cut from the artwork; everything below is transform-only so it stays
-   on the compositor and runs on any device.
+   The bee
+   Vector mark traced from the artwork. Motion is transform-only so it stays on
+   the compositor; nothing here touches layout or paint.
    ========================================================================== */
 
 .bee-stage {
-  --bee-beat: 3.6s;
+  --bee-beat: 3.4s;
+  --bee-yellow: #f0b000;
+  --bee-shade: #804000;
+  --bee-black: #302020;
+  --bee-sky: #96d0f0;
 }
 
-/* Body: a slow hover with a hop on each beat, and a slight bank into it. */
-@keyframes bee-hover {
-  0% { transform: translateY(0) rotate(0deg); }
-  18% { transform: translateY(-4.5%) rotate(-1.4deg); }
-  38% { transform: translateY(-1.2%) rotate(0.5deg); }
-  60% { transform: translateY(-3%) rotate(-0.6deg); }
-  100% { transform: translateY(0) rotate(0deg); }
+/* Body: hovers, hops on the beat, and squashes very slightly as it pushes off
+   and lands — weight has to go somewhere. */
+@keyframes bee-body {
+  0%   { transform: translateY(0) rotate(0deg) scale(1, 1); }
+  12%  { transform: translateY(1.2%) rotate(0.3deg) scale(1.02, 0.975); }
+  30%  { transform: translateY(-5%) rotate(-1.5deg) scale(0.985, 1.02); }
+  52%  { transform: translateY(-1.5%) rotate(0.4deg) scale(1.01, 0.99); }
+  74%  { transform: translateY(-3.4%) rotate(-0.7deg) scale(1, 1); }
+  100% { transform: translateY(0) rotate(0deg) scale(1, 1); }
 }
 
-/* Wings: fast beat, hinged where they meet the body. Scale across the span
-   rather than rotating alone — a wing foreshortens as it sweeps. */
+/* Wings hinge where they meet the body. fill-box makes the percentages relative
+   to each wing's own bounding box rather than the whole viewBox. */
 @keyframes bee-wing-back {
-  0%, 100% { transform: rotate(-7deg) scaleY(1); }
-  50% { transform: rotate(6deg) scaleY(0.82); }
+  0%, 100% { transform: rotate(-8deg) scaleY(1); }
+  50%      { transform: rotate(7deg) scaleY(0.78); }
 }
 @keyframes bee-wing-front {
-  0%, 100% { transform: rotate(6deg) scaleY(0.86); }
-  50% { transform: rotate(-6deg) scaleY(1); }
+  0%, 100% { transform: rotate(7deg) scaleY(0.8); }
+  50%      { transform: rotate(-7deg) scaleY(1); }
 }
 
-/* Shadow shrinks as the body rises — counter-timed to the hover. */
+/* The antenna trails the body — follow-through, so it reads as attached rather
+   than painted on. Same beat, shifted late. */
+@keyframes bee-antenna {
+  0%   { transform: rotate(0deg); }
+  35%  { transform: rotate(3.5deg); }
+  62%  { transform: rotate(-2deg); }
+  100% { transform: rotate(0deg); }
+}
+
 @keyframes bee-shadow {
-  0% { transform: translateX(-50%) scale(1); opacity: 0.20; }
-  18% { transform: translateX(-50%) scale(0.80); opacity: 0.11; }
-  38% { transform: translateX(-50%) scale(0.94); opacity: 0.17; }
-  60% { transform: translateX(-50%) scale(0.86); opacity: 0.14; }
-  100% { transform: translateX(-50%) scale(1); opacity: 0.20; }
+  0%   { transform: translateX(-50%) scaleX(1); opacity: 0.22; }
+  30%  { transform: translateX(-50%) scaleX(0.78); opacity: 0.1; }
+  52%  { transform: translateX(-50%) scaleX(0.93); opacity: 0.18; }
+  74%  { transform: translateX(-50%) scaleX(0.84); opacity: 0.14; }
+  100% { transform: translateX(-50%) scaleX(1); opacity: 0.22; }
 }
 
-.bee-hover {
-  animation: bee-hover var(--bee-beat) cubic-bezier(0.4, 0, 0.3, 1) infinite;
+.bee-body,
+.bee-antenna,
+.bee-wing {
+  transform-box: fill-box;
   will-change: transform;
 }
 
+.bee-body {
+  transform-origin: 50% 90%;
+  animation: bee-body var(--bee-beat) cubic-bezier(0.37, 0, 0.28, 1) infinite;
+}
+
+.bee-antenna {
+  transform-origin: 100% 60%;
+  animation: bee-antenna var(--bee-beat) cubic-bezier(0.37, 0, 0.28, 1) infinite;
+  animation-delay: 90ms;
+}
+
+/* Rear wing is fractionally slower, so the pair never looks mechanically
+   synced the way two identical loops do. */
 .bee-wing-back {
-  animation: bee-wing-back 0.24s ease-in-out infinite;
-  will-change: transform;
+  transform-origin: 92% 94%;
+  animation: bee-wing-back 235ms ease-in-out infinite;
 }
 
 .bee-wing-front {
-  animation: bee-wing-front 0.22s ease-in-out infinite;
-  will-change: transform;
+  transform-origin: 5% 48%;
+  animation: bee-wing-front 210ms ease-in-out infinite;
 }
 
 .bee-shadow {
   position: absolute;
   left: 50%;
-  bottom: -6%;
-  width: 58%;
-  height: 7%;
+  bottom: -4%;
+  width: 54%;
+  height: 6%;
   border-radius: 999px;
-  background: var(--iso-black);
-  filter: blur(6px);
-  animation: bee-shadow var(--bee-beat) cubic-bezier(0.4, 0, 0.3, 1) infinite;
+  background: var(--bee-black);
+  filter: blur(7px);
+  animation: bee-shadow var(--bee-beat) cubic-bezier(0.37, 0, 0.28, 1) infinite;
 }
 
-/* A stated preference wins: hold the finished pose, wings still. */
 @media (prefers-reduced-motion: reduce) {
-  .bee-hover,
-  .bee-wing-back,
-  .bee-wing-front,
+  .bee-body,
+  .bee-antenna,
+  .bee-wing,
   .bee-shadow {
     animation: none;
   }
