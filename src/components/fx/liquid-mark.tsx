@@ -8,6 +8,10 @@ import { useEffectsEnabled, useInView } from "./use-effects-enabled";
 /**
  * The Hanubees mark in liquid metal.
  *
+ * The shader is fed a solid silhouette of the parcel rather than the full
+ * artwork: a metal treatment reads shape, and the logo's stripes, eyes, and
+ * wings only turn to noise inside it.
+ *
  * Runs the LiquidMetal shader from @paper-design/shaders-react — the engine
  * behind paper-design/liquid-logo, which is itself a demo app rather than a
  * publishable package. The mark is the one place on the marketing site that
@@ -42,15 +46,15 @@ export function LiquidMark({ size = 132 }: { size?: number }) {
 
       {enabled && inView ? (
         <LiquidMetal
-          image="/bee-square.png"
+          image="/bee-silhouette.png"
           className="absolute inset-0 size-full"
           colorBack="#00000000"
           colorTint="#e8a93c"
-          repetition={3.4}
-          softness={0.32}
+          repetition={2.2}
+          softness={0.22}
           shiftRed={0.18}
           shiftBlue={-0.18}
-          contour={0.85}
+          contour={1}
           distortion={0.12}
           speed={0.5}
           angle={0.3}

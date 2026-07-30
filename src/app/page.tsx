@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LandingHero } from "@/components/fx/landing-hero";
 import { LiquidMark } from "@/components/fx/liquid-mark";
 import { CheckIcon } from "@/components/icons";
 import { Wordmark, Logo } from "@/components/logo";
@@ -101,33 +102,31 @@ export default async function Landing() {
       </header>
 
       {/* ---------------------------------------------------------------- hero */}
-      <section className="mx-auto w-full max-w-6xl px-4 pb-8 pt-16 text-center sm:pt-20">
-        <div className="rise mb-6">
-          <LiquidMark />
-        </div>
-        <h1 className="rise rise-1 mx-auto max-w-3xl text-4xl font-semibold leading-[1.1] tracking-tight sm:text-6xl">
-          Commerce for people who
-          <br className="hidden sm:block" /> actually make things
-        </h1>
-        <p className="rise rise-2 mx-auto mt-5 max-w-xl text-[17px] leading-relaxed text-text-2">
-          Launch a storefront, take orders, and run the whole business from one
-          admin. No plugin maze, no per-feature pricing. Free while you find your
-          first 50 customers.
-        </p>
-        <div className="rise rise-3 mt-8 flex flex-wrap items-center justify-center gap-3">
-          <Link
-            href="/admin"
-            className="pressable inline-flex h-11 items-center rounded-full bg-accent px-6 text-sm font-medium text-white"
-          >
-            Open the dashboard
-          </Link>
-          <Link
-            href="/store/bloom"
-            className="pressable inline-flex h-11 items-center rounded-full border border-line-strong px-6 text-sm font-medium [transition:background-color_140ms_var(--ease-out),transform_140ms_var(--ease-out)] hover:bg-surface-2"
-          >
-            See a live storefront
-          </Link>
-        </div>
+      <section className="mx-auto w-full max-w-6xl px-4 pb-8 pt-10 sm:pt-14">
+        <LandingHero aside={<LiquidMark size={240} />}>
+          <h1 className="rise max-w-xl text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl">
+            Commerce for people who actually make things
+          </h1>
+          <p className="rise rise-1 mt-5 max-w-md text-[17px] leading-relaxed text-text-2">
+            Launch a storefront, take orders, and run the whole business from one
+            admin. No plugin maze, no per-feature pricing. Free while you find your
+            first 50 customers.
+          </p>
+          <div className="rise rise-2 mt-8 flex flex-wrap items-center gap-3">
+            <Link
+              href="/admin"
+              className="pressable inline-flex h-11 items-center rounded-full bg-accent px-6 text-sm font-medium text-white"
+            >
+              Open the dashboard
+            </Link>
+            <Link
+              href="/store/bloom"
+              className="pressable inline-flex h-11 items-center rounded-full border border-line-strong bg-surface/70 px-6 text-sm font-medium [transition:background-color_140ms_var(--ease-out),transform_140ms_var(--ease-out)] hover:bg-surface"
+            >
+              See a live storefront
+            </Link>
+          </div>
+        </LandingHero>
       </section>
 
       {/* The product itself is the hero image */}
