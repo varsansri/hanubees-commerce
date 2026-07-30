@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { MinusIcon, PlusIcon } from "@/components/icons";
 import { getStore, listStorefrontProducts } from "@/lib/data";
 import { money } from "@/lib/format";
 
@@ -49,12 +50,18 @@ export default async function CartPage({
                   {product.variants[0].title}
                 </p>
                 <div className="mt-2 inline-flex items-center rounded-full border border-line">
-                  <button className="size-7 text-text-2 hover:text-text" aria-label="Decrease">
-                    −
+                  <button
+                    className="pressable inline-flex size-7 items-center justify-center text-text-2 hover:text-text"
+                    aria-label="Decrease quantity"
+                  >
+                    <MinusIcon className="size-3.5" />
                   </button>
                   <span className="nums w-6 text-center text-[13px]">{quantity}</span>
-                  <button className="size-7 text-text-2 hover:text-text" aria-label="Increase">
-                    +
+                  <button
+                    className="pressable inline-flex size-7 items-center justify-center text-text-2 hover:text-text"
+                    aria-label="Increase quantity"
+                  >
+                    <PlusIcon className="size-3.5" />
                   </button>
                 </div>
               </div>
@@ -88,7 +95,7 @@ export default async function CartPage({
             </div>
           </dl>
 
-          <button className="mt-5 h-11 w-full rounded-full bg-accent text-sm font-medium text-white transition-opacity hover:opacity-90">
+          <button className="pressable mt-5 h-11 w-full rounded-full bg-accent text-sm font-medium text-white [transition:opacity_140ms_var(--ease-out),transform_140ms_var(--ease-out)] hover:opacity-90">
             Checkout
           </button>
           <Link

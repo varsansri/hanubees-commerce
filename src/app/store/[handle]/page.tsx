@@ -40,10 +40,7 @@ export default async function StorefrontHome({
           style={{ background: store.theme.heroImage }}
         >
           <div className="max-w-lg">
-            <p className="text-[13px] font-medium uppercase tracking-widest text-black/55">
-              New season
-            </p>
-            <h1 className="mt-3 text-3xl font-semibold leading-tight tracking-tight text-black sm:text-5xl">
+            <h1 className="text-3xl font-semibold leading-tight tracking-tight text-black sm:text-5xl">
               {store.tagline}
             </h1>
             <p className="mt-4 max-w-md text-[15px] leading-relaxed text-black/70">
@@ -52,7 +49,7 @@ export default async function StorefrontHome({
             </p>
             <Link
               href="#shop"
-              className="mt-7 inline-flex h-11 items-center rounded-full bg-black px-6 text-sm font-medium text-white transition-transform hover:-translate-y-0.5"
+              className="pressable mt-7 inline-flex h-11 items-center rounded-full bg-black px-6 text-sm font-medium text-white"
             >
               Shop the collection
             </Link>
@@ -84,7 +81,7 @@ export default async function StorefrontHome({
             <li key={p.id}>
               <Link href={`/store/${store.handle}/products/${p.slug}`} className="group">
                 <div
-                  className="aspect-[4/5] w-full overflow-hidden rounded-xl border border-line transition-transform duration-300 group-hover:-translate-y-1"
+                  className="aspect-[4/5] w-full overflow-hidden rounded-xl border border-line [transition:transform_200ms_var(--ease-out)] group-hover:-translate-y-1"
                   style={{ background: p.images[0] }}
                   aria-hidden
                 />

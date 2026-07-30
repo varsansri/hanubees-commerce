@@ -141,6 +141,39 @@ export const CartIcon = (p: SVGProps<SVGSVGElement>) => (
   </Icon>
 );
 
+export const CheckIcon = (p: SVGProps<SVGSVGElement>) => (
+  <Icon {...p}>
+    <path d="m4 12.5 5 5L20 6.5" />
+  </Icon>
+);
+
+export const PlusIcon = (p: SVGProps<SVGSVGElement>) => (
+  <Icon {...p}>
+    <path d="M12 5v14M5 12h14" />
+  </Icon>
+);
+
+export const MinusIcon = (p: SVGProps<SVGSVGElement>) => (
+  <Icon {...p}>
+    <path d="M5 12h14" />
+  </Icon>
+);
+
+export const ArrowLeftIcon = (p: SVGProps<SVGSVGElement>) => (
+  <Icon {...p}>
+    <path d="M19 12H5" />
+    <path d="m12 5-7 7 7 7" />
+  </Icon>
+);
+
+/** Empty states — an open tray, nothing in it. */
+export const EmptyIcon = (p: SVGProps<SVGSVGElement>) => (
+  <Icon {...p}>
+    <path d="M3 13h4l1.5 3h7L17 13h4" />
+    <path d="M4.5 6.5 3 13v6h18v-6l-1.5-6.5A2 2 0 0 0 17.6 5H6.4a2 2 0 0 0-1.9 1.5Z" />
+  </Icon>
+);
+
 /** The bee mark — the whole brand identity in one glyph. */
 export function BeeMark({ className = "size-6" }: { className?: string }) {
   return (

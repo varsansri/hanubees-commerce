@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BeeMark } from "@/components/icons";
+import { BeeMark, CheckIcon } from "@/components/icons";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { listStores } from "@/lib/data";
 
@@ -93,7 +93,7 @@ export default async function Landing() {
             </Link>
             <Link
               href="/admin"
-              className="inline-flex h-9 items-center rounded-[var(--radius)] bg-accent px-3.5 text-[13px] font-medium text-white transition-colors hover:bg-accent-hover"
+              className="pressable inline-flex h-9 items-center rounded-[var(--radius)] bg-accent px-3.5 text-[13px] font-medium text-white [transition:background-color_140ms_var(--ease-out),transform_140ms_var(--ease-out)] hover:bg-accent-hover"
             >
               Open dashboard
             </Link>
@@ -103,39 +103,34 @@ export default async function Landing() {
 
       {/* ---------------------------------------------------------------- hero */}
       <section className="mx-auto w-full max-w-6xl px-4 pb-8 pt-20 text-center sm:pt-28">
-        <p className="inline-flex items-center gap-2 rounded-full border border-accent-border bg-accent-soft px-3 py-1 text-[12px] font-medium text-accent-text">
-          Now in private beta
-        </p>
-        <h1 className="mx-auto mt-6 max-w-3xl text-4xl font-semibold leading-[1.1] tracking-tight sm:text-6xl">
+        <h1 className="rise mx-auto max-w-3xl text-4xl font-semibold leading-[1.1] tracking-tight sm:text-6xl">
           Commerce for people who
           <br className="hidden sm:block" /> actually make things
         </h1>
-        <p className="mx-auto mt-5 max-w-xl text-[17px] leading-relaxed text-text-2">
+        <p className="rise rise-1 mx-auto mt-5 max-w-xl text-[17px] leading-relaxed text-text-2">
           Launch a storefront, take orders, and run the whole business from one
-          admin. No plugin maze, no per-feature pricing.
+          admin. No plugin maze, no per-feature pricing. Free while you find your
+          first 50 customers.
         </p>
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <div className="rise rise-2 mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link
             href="/admin"
-            className="inline-flex h-11 items-center rounded-full bg-accent px-6 text-sm font-medium text-white transition-transform hover:-translate-y-0.5"
+            className="pressable inline-flex h-11 items-center rounded-full bg-accent px-6 text-sm font-medium text-white"
           >
             Open the dashboard
           </Link>
           <Link
             href="/store/bloom"
-            className="inline-flex h-11 items-center rounded-full border border-line-strong px-6 text-sm font-medium transition-colors hover:bg-surface-2"
+            className="pressable inline-flex h-11 items-center rounded-full border border-line-strong px-6 text-sm font-medium [transition:background-color_140ms_var(--ease-out),transform_140ms_var(--ease-out)] hover:bg-surface-2"
           >
             See a live storefront
           </Link>
         </div>
-        <p className="mt-4 text-[13px] text-text-3">
-          Free while you find your first 50 customers.
-        </p>
       </section>
 
       {/* The product itself is the hero image */}
       <section className="mx-auto w-full max-w-6xl px-4 pt-6">
-        <div className="overflow-hidden rounded-2xl border border-line bg-surface shadow-[var(--shadow-lg)]">
+        <div className="rise rise-3 overflow-hidden rounded-2xl border border-line bg-surface shadow-[var(--shadow-lg)]">
           <div className="flex items-center gap-1.5 border-b border-line bg-surface-2 px-4 py-2.5">
             <span className="size-2.5 rounded-full bg-[var(--border-strong)]" />
             <span className="size-2.5 rounded-full bg-[var(--border-strong)]" />
@@ -175,17 +170,21 @@ export default async function Landing() {
           And nothing it doesn&apos;t. The features below are in the box, not in an app
           store.
         </p>
-        <ul className="mt-8 grid gap-4 sm:grid-cols-2">
+        {/* A ruled list, not a grid of identical cards — the card is the lazy
+            container, and these four claims are prose, not tiles. */}
+        <dl className="mt-10 border-t border-line">
           {FEATURES.map((f) => (
-            <li
+            <div
               key={f.title}
-              className="rounded-xl border border-line bg-surface p-5 shadow-[var(--shadow-sm)]"
+              className="grid gap-2 border-b border-line py-7 sm:grid-cols-[minmax(0,18rem)_1fr] sm:gap-10"
             >
-              <h3 className="text-[15px] font-semibold tracking-tight">{f.title}</h3>
-              <p className="mt-1.5 text-[14px] leading-relaxed text-text-2">{f.body}</p>
-            </li>
+              <dt className="text-[17px] font-medium tracking-tight">{f.title}</dt>
+              <dd className="max-w-[68ch] text-[15px] leading-relaxed text-text-2">
+                {f.body}
+              </dd>
+            </div>
           ))}
-        </ul>
+        </dl>
       </section>
 
       {/* ------------------------------------------------------------ examples */}
@@ -199,7 +198,7 @@ export default async function Landing() {
             <li key={s.id}>
               <Link href={`/store/${s.handle}`} className="group block">
                 <div
-                  className="aspect-[3/2] rounded-xl border border-line transition-transform duration-300 group-hover:-translate-y-1"
+                  className="aspect-[3/2] rounded-xl border border-line [transition:transform_200ms_var(--ease-out)] group-hover:-translate-y-1"
                   style={{ background: s.theme.heroImage }}
                   aria-hidden
                 />
@@ -243,14 +242,14 @@ export default async function Landing() {
               <ul className="mt-5 flex flex-1 flex-col gap-2 text-[14px] text-text-2">
                 {p.points.map((point) => (
                   <li key={point} className="flex gap-2">
-                    <span className="text-accent">✓</span>
+                    <CheckIcon className="mt-0.5 size-4 shrink-0 text-accent" />
                     {point}
                   </li>
                 ))}
               </ul>
               <Link
                 href="/admin"
-                className={`mt-6 inline-flex h-10 items-center justify-center rounded-[var(--radius)] text-sm font-medium transition-colors ${
+                className={`pressable mt-6 inline-flex h-10 items-center justify-center rounded-[var(--radius)] text-sm font-medium [transition:background-color_140ms_var(--ease-out),transform_140ms_var(--ease-out)] ${
                   p.featured
                     ? "bg-accent text-white hover:bg-accent-hover"
                     : "border border-line-strong hover:bg-surface-2"
@@ -274,7 +273,7 @@ export default async function Landing() {
           </p>
           <Link
             href="/admin"
-            className="mt-7 inline-flex h-11 items-center rounded-full bg-accent px-6 text-sm font-medium text-white transition-transform hover:-translate-y-0.5"
+            className="pressable mt-7 inline-flex h-11 items-center rounded-full bg-accent px-6 text-sm font-medium text-white"
           >
             Open the dashboard
           </Link>

@@ -90,7 +90,7 @@ export function Sidebar({ store, stores }: { store: Store; stores: Store[] }) {
       </aside>
 
       {/* Mobile drawer — hidden until the peer checkbox is checked */}
-      <div className="invisible fixed inset-0 z-50 opacity-0 transition-[opacity,visibility] peer-checked:visible peer-checked:opacity-100 peer-checked:[&_[data-panel]]:translate-x-0 lg:hidden">
+      <div className="invisible fixed inset-0 z-50 opacity-0 [transition:opacity_var(--dur-drawer)_var(--ease-out),visibility_var(--dur-drawer)] peer-checked:visible peer-checked:opacity-100 peer-checked:[&_[data-panel]]:translate-x-0 lg:hidden">
         <label
           htmlFor={NAV_TOGGLE_ID}
           className="absolute inset-0 bg-black/40"
@@ -99,7 +99,7 @@ export function Sidebar({ store, stores }: { store: Store; stores: Store[] }) {
         {/* Panel slides in from the checkbox state reached via the overlay above */}
         <div
           data-panel
-          className="absolute inset-y-0 left-0 w-64 -translate-x-full border-r border-line bg-surface transition-transform"
+          className="absolute inset-y-0 left-0 w-64 -translate-x-full border-r border-line bg-surface [transition:transform_var(--dur-drawer)_var(--ease-drawer)]"
         >
           <label
             htmlFor={NAV_TOGGLE_ID}
@@ -122,7 +122,7 @@ function StoreSwitcher({ store, stores }: { store: Store; stores: Store[] }) {
     <div className="relative px-3">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center gap-2.5 rounded-[var(--radius)] border border-line px-2.5 py-2 text-left transition-colors hover:bg-surface-2"
+        className="pressable flex w-full items-center gap-2.5 rounded-[var(--radius)] border border-line px-2.5 py-2 text-left [transition:background-color_140ms_var(--ease-out),transform_140ms_var(--ease-out)] hover:bg-surface-2"
         aria-expanded={open}
       >
         <span className="text-accent">
@@ -140,7 +140,7 @@ function StoreSwitcher({ store, stores }: { store: Store; stores: Store[] }) {
       </button>
 
       {open ? (
-        <div className="absolute left-3 right-3 top-full z-20 mt-1 overflow-hidden rounded-[var(--radius)] border border-line bg-surface shadow-[var(--shadow-lg)]">
+        <div className="pop absolute left-3 right-3 top-full z-20 mt-1 overflow-hidden rounded-[var(--radius)] border border-line bg-surface shadow-[var(--shadow-lg)]">
           {stores.map((s) => (
             <Link
               key={s.id}

@@ -15,7 +15,7 @@
   /* Text */
   --text: #16130e;
   --text-2: #5c554a;
-  --text-3: #8b8377;
+  --text-3: #6f6759;
   --text-inverse: #fbfaf7;
 
   /* Lines */
@@ -23,16 +23,16 @@
   --border-strong: #d3ccbe;
 
   /* Brand — honey */
-  --accent: #b8791a;
-  --accent-hover: #9d6613;
+  --accent: #a06912;
+  --accent-hover: #855610;
   --accent-soft: #fdf3e0;
   --accent-border: #f0d9a8;
   --accent-text: #7a4d0c;
 
   /* Status */
-  --success: #1a7f52;
+  --success: #177449;
   --success-soft: #e6f4ec;
-  --warning: #a16207;
+  --warning: #8f5606;
   --warning-soft: #fdf3e0;
   --danger: #b3261e;
   --danger-soft: #fceceb;
@@ -45,6 +45,18 @@
   --shadow-lg: 0 8px 32px rgb(24 20 14 / 0.12);
 
   --radius: 0.625rem;
+
+  /* Motion. The built-in CSS easings are too weak to read as intentional;
+     these are the stronger curves. ease-in is never used for UI — it delays
+     the first moment, which is exactly when the user is watching. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* UI motion stays under 300ms. Longer belongs to marketing only. */
+  --dur-press: 140ms;
+  --dur-pop: 180ms;
+  --dur-drawer: 280ms;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -56,7 +68,7 @@
 
     --text: #f4f1ea;
     --text-2: #a89f90;
-    --text-3: #7c7466;
+    --text-3: #9a9282;
     --text-inverse: #16130e;
 
     --border: #2f2a22;
@@ -91,18 +103,18 @@
   --surface-3: #ece8e0;
   --text: #16130e;
   --text-2: #5c554a;
-  --text-3: #8b8377;
+  --text-3: #6f6759;
   --text-inverse: #fbfaf7;
   --border: #e5e0d6;
   --border-strong: #d3ccbe;
-  --accent: #b8791a;
-  --accent-hover: #9d6613;
+  --accent: #a06912;
+  --accent-hover: #855610;
   --accent-soft: #fdf3e0;
   --accent-border: #f0d9a8;
   --accent-text: #7a4d0c;
-  --success: #1a7f52;
+  --success: #177449;
   --success-soft: #e6f4ec;
-  --warning: #a16207;
+  --warning: #8f5606;
   --warning-soft: #fdf3e0;
   --danger: #b3261e;
   --danger-soft: #fceceb;
@@ -120,7 +132,7 @@
   --surface-3: #2c271f;
   --text: #f4f1ea;
   --text-2: #a89f90;
-  --text-3: #7c7466;
+  --text-3: #9a9282;
   --text-inverse: #16130e;
   --border: #2f2a22;
   --border-strong: #423b30;
@@ -205,4 +217,65 @@ body {
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Motion
+   ========================================================================== */
+
+/* Pressable things confirm the press. Scale stays subtle, and the transition
+   names its property — never `all`. */
+.pressable {
+  transition: transform var(--dur-press) var(--ease-out);
+}
+.pressable:active {
+  transform: scale(0.97);
+}
+
+/* Popovers scale from their trigger, not from the centre, and never from
+   scale(0) — nothing in the world appears out of nothing. */
+.pop {
+  transform-origin: var(--pop-origin, top center);
+  transition:
+    opacity var(--dur-pop) var(--ease-out),
+    transform var(--dur-pop) var(--ease-out);
+}
+@starting-style {
+  .pop {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+/* The landing's one authored moment: the hero settles in on first paint.
+   The default state is already visible, so no-JS and reduced-motion readers
+   get the finished composition rather than an empty page. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+.rise {
+  animation: rise 620ms var(--ease-out) backwards;
+}
+.rise-1 {
+  animation-delay: 60ms;
+}
+.rise-2 {
+  animation-delay: 120ms;
+}
+.rise-3 {
+  animation-delay: 180ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

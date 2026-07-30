@@ -131,10 +131,10 @@ export default async function ProductPage({
           ) : null}
 
           <div className="mt-7 flex flex-col gap-2">
-            <button className="h-12 w-full rounded-full bg-accent text-sm font-medium text-white transition-opacity hover:opacity-90">
+            <button className="pressable h-12 w-full rounded-full bg-accent text-sm font-medium text-white [transition:opacity_140ms_var(--ease-out),transform_140ms_var(--ease-out)] hover:opacity-90">
               Add to cart
             </button>
-            <button className="h-12 w-full rounded-full border border-line-strong text-sm font-medium transition-colors hover:bg-surface-2">
+            <button className="pressable h-12 w-full rounded-full border border-line-strong text-sm font-medium [transition:background-color_140ms_var(--ease-out),transform_140ms_var(--ease-out)] hover:bg-surface-2">
               Buy it now
             </button>
           </div>
@@ -171,7 +171,7 @@ export default async function ProductPage({
                   className="group"
                 >
                   <div
-                    className="aspect-[4/5] w-full rounded-xl border border-line transition-transform duration-300 group-hover:-translate-y-1"
+                    className="aspect-[4/5] w-full rounded-xl border border-line [transition:transform_200ms_var(--ease-out)] group-hover:-translate-y-1"
                     style={{ background: p.images[0] }}
                     aria-hidden
                   />

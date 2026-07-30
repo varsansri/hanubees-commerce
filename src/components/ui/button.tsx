@@ -21,7 +21,9 @@ const SIZES: Record<Size, string> = {
 function classes(variant: Variant, size: Size, className?: string) {
   return [
     "inline-flex items-center justify-center rounded-[var(--radius)] border font-medium",
-    "transition-colors disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap",
+    // Named properties, never `all`; `pressable` adds the scale-down on press.
+    "pressable [transition:background-color_140ms_var(--ease-out),border-color_140ms_var(--ease-out),color_140ms_var(--ease-out),transform_140ms_var(--ease-out)]",
+    "disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap",
     VARIANTS[variant],
     SIZES[size],
     className,

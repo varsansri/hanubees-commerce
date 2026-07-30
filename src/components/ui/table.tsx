@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { EmptyIcon } from "../icons";
 
 /**
  * Table primitives. Wide tables scroll inside their own container so the page
@@ -71,8 +72,8 @@ export function EmptyState({
 }) {
   return (
     <div className="flex flex-col items-center justify-center gap-2 px-6 py-16 text-center">
-      <div className="mb-1 flex size-10 items-center justify-center rounded-full bg-surface-2 text-lg">
-        ◦
+      <div className="mb-1 flex size-10 items-center justify-center rounded-full bg-surface-2 text-text-3">
+        <EmptyIcon className="size-5" />
       </div>
       <p className="text-sm font-medium">{title}</p>
       <p className="max-w-sm text-[13px] text-text-2">{description}</p>

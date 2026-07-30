@@ -6,6 +6,7 @@ import {
   PAYMENT_TONE,
   label as toLabel,
 } from "@/components/ui/badge";
+import { ArrowLeftIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader } from "@/components/ui/card";
 import { getOrder, getStore } from "@/lib/data";
@@ -30,9 +31,10 @@ export default async function OrderDetail({
       <div>
         <Link
           href={`/admin/${store.handle}/orders`}
-          className="text-[13px] text-text-2 hover:text-text"
+          className="inline-flex items-center gap-1.5 text-[13px] text-text-2 hover:text-text"
         >
-          ← Orders
+          <ArrowLeftIcon className="size-3.5" />
+          Orders
         </Link>
         <div className="mt-2 flex flex-wrap items-center gap-3">
           <h1 className="text-xl font-semibold tracking-tight">#{order.number}</h1>

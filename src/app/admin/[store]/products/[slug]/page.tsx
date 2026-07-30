@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Badge, PRODUCT_TONE, label as toLabel } from "@/components/ui/badge";
+import { ArrowLeftIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Field, Input, Select, Textarea } from "@/components/ui/field";
@@ -25,9 +26,10 @@ export default async function ProductDetail({
       <div>
         <Link
           href={`/admin/${store.handle}/products`}
-          className="text-[13px] text-text-2 hover:text-text"
+          className="inline-flex items-center gap-1.5 text-[13px] text-text-2 hover:text-text"
         >
-          ← Products
+          <ArrowLeftIcon className="size-3.5" />
+          Products
         </Link>
         <div className="mt-2 flex flex-wrap items-center gap-3">
           <h1 className="text-xl font-semibold tracking-tight">{product.title}</h1>
