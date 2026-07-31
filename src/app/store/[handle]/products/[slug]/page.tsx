@@ -9,6 +9,7 @@ import {
 import { money } from "@/lib/format";
 
 export async function generateStaticParams() {
+  if (process.env.NEXT_PUBLIC_SUPABASE_URL) return [];
   const stores = await listStores();
   const params = await Promise.all(
     stores.map(async (store) => {

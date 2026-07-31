@@ -3,8 +3,15 @@ import { notFound } from "next/navigation";
 import { getStore, listStores, listStorefrontProducts } from "@/lib/data";
 import { money } from "@/lib/format";
 
-/** Storefronts are prerendered — shoppers should never wait on a cold render. */
+/**
+ * Prerender the demo storefronts only.
+ *
+ * This runs at build time, where there is no request and so no session cookie
+ * to read. Once a database is configured the store list is per-user data, so
+ * these render on demand instead of being baked.
+ */
 export async function generateStaticParams() {
+  if (process.env.NEXT_PUBLIC_SUPABASE_URL) return [];
   const stores = await listStores();
   return stores.map((s) => ({ handle: s.handle }));
 }

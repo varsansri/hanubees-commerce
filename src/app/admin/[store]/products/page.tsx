@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Badge, PRODUCT_TONE, label as toLabel } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { NewProductButton } from "@/components/admin/new-product-button";
 import { PageHeader } from "@/components/ui/card";
 import { EmptyState, Table, TableWrap, Td, Th, Tr } from "@/components/ui/table";
 import { getStore, inventoryOf, listProducts } from "@/lib/data";
@@ -37,7 +37,7 @@ export default async function ProductsPage({
       <PageHeader
         title="Products"
         description={`${products.length} in this view`}
-        actions={<Button variant="primary">Add product</Button>}
+        actions={<NewProductButton handle={store.handle} />}
       />
 
       <div className="flex flex-wrap items-center gap-2">
@@ -75,7 +75,7 @@ export default async function ProductsPage({
           <EmptyState
             title="No products here yet"
             description="Add your first product, or switch to another status filter."
-            action={<Button variant="primary">Add product</Button>}
+            action={<NewProductButton handle={store.handle} />}
           />
         </TableWrap>
       ) : (

@@ -1,60 +1,90 @@
+import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 /**
- * Tenant resolution.
+ * Tenant resolution and session refresh.
  *
- * `acme.hanubees.com/...` is rewritten to `/store/acme/...` so the storefront
- * routes stay ordinary path segments. The apex and `www` serve the marketing
- * site; `admin.` is reserved for the merchant dashboard.
+ * Two jobs on every request:
  *
- * Vercel needs a wildcard domain (`*.hanubees.com`) attached to the project for
- * this to receive traffic — the rewrite alone is not enough.
+ * 1. `acme.hanubees.com/x` is rewritten to `/store/acme/x`, so storefront
+ *    routes stay ordinary path segments. Vercel needs `*.hanubees.com`
+ *    attached to the project for this to receive traffic.
+ * 2. The Supabase session cookie is refreshed. Without this the access token
+ *    expires mid-session and Server Components start seeing a signed-out user.
+ *
+ * The `/admin` gate here is a cheap redirect for signed-out visitors, not the
+ * security boundary. The real boundary is Row Level Security in Postgres: even
+ * with a forged cookie, a user's queries only ever return their own rows.
  */
 
 const ROOT_DOMAIN = "hanubees.com";
-
-/** Subdomains that are the platform itself, never a merchant store. */
 const RESERVED = new Set(["www", "admin", "api", "app", "assets", "cdn", "shop"]);
 
 function tenantFrom(host: string): string | null {
   const hostname = host.split(":")[0].toLowerCase();
-
-  // Local development: acme.localhost:3000
   if (hostname.endsWith(".localhost")) {
     const label = hostname.replace(".localhost", "");
     return RESERVED.has(label) ? null : label;
   }
-
   if (!hostname.endsWith(`.${ROOT_DOMAIN}`)) return null;
-
   const label = hostname.slice(0, -(ROOT_DOMAIN.length + 1));
-  // Only single-label subdomains are tenants; ignore deeper nesting.
   if (!label || label.includes(".") || RESERVED.has(label)) return null;
-
   return label;
 }
 
-export function proxy(request: NextRequest) {
-  const host = request.headers.get("host") ?? "";
-  const tenant = tenantFrom(host);
-  if (!tenant) return NextResponse.next();
+export async function proxy(request: NextRequest) {
+  let response = NextResponse.next({ request });
 
-  const { pathname, search } = request.nextUrl;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  // Already-rewritten paths and the admin pass through untouched.
-  if (pathname.startsWith("/store/") || pathname.startsWith("/admin")) {
-    return NextResponse.next();
+  if (url && key) {
+    const supabase = createServerClient(url, key, {
+      cookies: {
+        getAll: () => request.cookies.getAll(),
+        setAll(toSet) {
+          for (const { name, value } of toSet) request.cookies.set(name, value);
+          response = NextResponse.next({ request });
+          for (const { name, value, options } of toSet) {
+            response.cookies.set(name, value, options);
+          }
+        },
+      },
+    });
+
+    // Touching getUser() is what performs the refresh — do not remove it.
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const { pathname } = request.nextUrl;
+    if (!user && pathname.startsWith("/admin")) {
+      const to = request.nextUrl.clone();
+      to.pathname = "/login";
+      to.searchParams.set("next", pathname);
+      return NextResponse.redirect(to);
+    }
+    if (user && pathname === "/login") {
+      const to = request.nextUrl.clone();
+      to.pathname = "/admin";
+      to.search = "";
+      return NextResponse.redirect(to);
+    }
   }
 
-  const url = request.nextUrl.clone();
-  url.pathname = `/store/${tenant}${pathname === "/" ? "" : pathname}`;
-  url.search = search;
+  const tenant = tenantFrom(request.headers.get("host") ?? "");
+  if (!tenant) return response;
 
-  return NextResponse.rewrite(url);
+  const { pathname, search } = request.nextUrl;
+  if (pathname.startsWith("/store/") || pathname.startsWith("/admin")) return response;
+
+  const rewritten = request.nextUrl.clone();
+  rewritten.pathname = `/store/${tenant}${pathname === "/" ? "" : pathname}`;
+  rewritten.search = search;
+  return NextResponse.rewrite(rewritten);
 }
 
 export const config = {
-  // Skip static assets and image optimisation — nothing to rewrite there.
   matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.[\\w]+$).*)"],
 };

@@ -17,6 +17,7 @@ import {
   StorefrontIcon,
 } from "../icons";
 import { Logo } from "../logo";
+import { SignOut } from "./sign-out";
 
 const NAV = [
   { href: "", label: "Home", Icon: HomeIcon },
@@ -76,9 +77,12 @@ export function Sidebar({ store, stores }: { store: Store; stores: Store[] }) {
           <StorefrontIcon />
           View storefront
         </Link>
-        <p className="mt-3 px-1 text-[11px] text-text-3">
-          {store.plan[0].toUpperCase() + store.plan.slice(1)} plan · Hanubees
-        </p>
+        <div className="mt-3 flex items-center justify-between px-1">
+          <p className="text-[11px] text-text-3">
+            {store.plan[0].toUpperCase() + store.plan.slice(1)} plan
+          </p>
+          <SignOut />
+        </div>
       </div>
     </div>
   );

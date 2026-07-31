@@ -7,7 +7,7 @@ import {
   label as toLabel,
 } from "@/components/ui/badge";
 import { ArrowLeftIcon } from "@/components/icons";
-import { Button } from "@/components/ui/button";
+import { OrderActions } from "@/components/admin/order-actions";
 import { Card, CardHeader } from "@/components/ui/card";
 import { getOrder, getStore } from "@/lib/data";
 import { dateTime, money } from "@/lib/format";
@@ -45,13 +45,8 @@ export default async function OrderDetail({
             {toLabel(order.fulfillmentStatus)}
           </Badge>
           <span className="text-[13px] text-text-3">{dateTime(order.placedAt)}</span>
-          <div className="ml-auto flex gap-2">
-            <Button variant="secondary" size="sm">
-              Print invoice
-            </Button>
-            <Button variant="primary" size="sm">
-              Fulfil items
-            </Button>
+          <div className="ml-auto">
+            <OrderActions handle={store.handle} order={order} />
           </div>
         </div>
       </div>
