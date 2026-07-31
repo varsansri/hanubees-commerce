@@ -42,7 +42,7 @@ export default function AboutPage() {
       <section className="mx-auto w-full max-w-6xl px-4 pt-12 sm:pt-16">
         <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:gap-12">
           <div>
-            <h1 className="iso-display max-w-2xl text-[2.5rem] sm:text-[3.75rem]">
+            <h1 className="iso-display rise max-w-2xl text-[2.5rem] sm:text-[3.75rem]">
               A software studio in Coimbatore.
             </h1>
             <p className="mt-6 max-w-lg text-[17px] leading-relaxed text-text-2">
@@ -65,10 +65,10 @@ export default function AboutPage() {
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-4 pt-24">
-        <h2 className="iso-display text-[2rem] sm:text-[2.75rem]">How we think.</h2>
-        <ul className="mt-10 grid gap-5 sm:grid-cols-2">
-          {BELIEFS.map((b) => (
-            <li key={b.title} className={`iso-block p-6 ${TONE_CLASS[b.tone]}`}>
+        <h2 className="iso-display v-wipe text-[2rem] sm:text-[2.75rem]">How we think.</h2>
+        <ul className="v-stagger mt-10 grid gap-5 sm:grid-cols-2">
+          {BELIEFS.map((b, i) => (
+            <li key={b.title} className={`iso-block p-6 ${TONE_CLASS[b.tone]}`} style={{ ["--i" as string]: i }}>
               <h3 className="iso-display text-[1.5rem]">{b.title}</h3>
               <p className="mt-3 text-[14px] leading-relaxed opacity-90">{b.body}</p>
             </li>
@@ -77,7 +77,7 @@ export default function AboutPage() {
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-4 pt-24">
-        <h2 className="iso-display text-[2rem] sm:text-[2.75rem]">What we work in.</h2>
+        <h2 className="iso-display v-wipe text-[2rem] sm:text-[2.75rem]">What we work in.</h2>
         <p className="mt-3 max-w-md text-[15px] text-text-2">
           One stack, known deeply, rather than a list of everything that exists.
         </p>
@@ -108,7 +108,7 @@ export default function AboutPage() {
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-4 pt-24">
-        <div className="iso-block bg-iso-black px-6 py-14 text-center text-white sm:px-12">
+        <div className="iso-block v-scale bg-iso-black px-6 py-14 text-center text-white sm:px-12">
           <h2 className="iso-display mx-auto max-w-xl text-[2rem] sm:text-[3rem]">
             Come and talk to us.
           </h2>

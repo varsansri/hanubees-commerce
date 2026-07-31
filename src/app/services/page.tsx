@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckIcon, ChevronIcon } from "@/components/icons";
+import { ServiceGlyph } from "@/components/site/service-icons";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { INDUSTRIES, PROCESS, SERVICES, TONE_CLASS } from "@/lib/site";
@@ -18,7 +19,7 @@ export default function ServicesPage() {
       <SiteHeader />
 
       <section className="mx-auto w-full max-w-6xl px-4 pt-12 sm:pt-16">
-        <h1 className="iso-display max-w-3xl text-[2.5rem] sm:text-[3.75rem]">
+        <h1 className="iso-display rise max-w-3xl text-[2.5rem] sm:text-[3.75rem]">
           Six things we do, properly.
         </h1>
         <p className="mt-6 max-w-lg text-[17px] leading-relaxed text-text-2">
@@ -29,14 +30,18 @@ export default function ServicesPage() {
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-4 pt-12">
-        <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {SERVICES.map((s) => (
-            <li key={s.slug} id={s.slug} className="scroll-mt-24">
+        <ul className="v-stagger grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {SERVICES.map((s, i) => (
+            <li key={s.slug} id={s.slug} className="scroll-mt-24" style={{ ["--i" as string]: i }}>
               <Link
                 href={`/services/${s.slug}`}
-                className={`iso-block iso-press flex h-full flex-col p-6 transition-transform duration-200 ease-[var(--ease-out)] hover:-translate-y-1 ${TONE_CLASS[s.tone]}`}
+                className={`iso-block iso-press group flex h-full flex-col p-6 transition-transform duration-200 ease-[var(--ease-out)] hover:-translate-y-1 ${TONE_CLASS[s.tone]}`}
               >
-                <h2 className="iso-display text-[1.75rem]">{s.name}</h2>
+                <ServiceGlyph
+                  slug={s.slug}
+                  className="size-9 transition-transform duration-300 ease-[var(--ease-out)] group-hover:-rotate-6 group-hover:scale-110"
+                />
+                <h2 className="iso-display mt-5 text-[1.75rem]">{s.name}</h2>
                 <p className="mt-3 text-[15px] leading-relaxed opacity-90">{s.short}</p>
 
                 <ul className="mt-5 flex flex-col gap-2 text-[13px]">
@@ -65,14 +70,14 @@ export default function ServicesPage() {
 
       {/* ---------------------------------------------------------- industries */}
       <section className="mx-auto w-full max-w-6xl px-4 pt-24">
-        <h2 className="iso-display text-[2rem] sm:text-[2.75rem]">Who we build for.</h2>
+        <h2 className="iso-display v-wipe text-[2rem] sm:text-[2.75rem]">Who we build for.</h2>
         <p className="mt-3 max-w-md text-[15px] text-text-2">
           Not a list of everyone. These are the businesses whose problems we
           already know the shape of.
         </p>
-        <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {INDUSTRIES.map((ind) => (
-            <li key={ind.name} className="iso-block bg-surface p-6">
+        <ul className="v-stagger mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {INDUSTRIES.map((ind, i) => (
+            <li key={ind.name} className="iso-block bg-surface p-6" style={{ ["--i" as string]: i }}>
               <h3 className="text-[16px] font-bold tracking-tight">{ind.name}</h3>
               <p className="mt-2 text-[14px] leading-relaxed text-text-2">{ind.body}</p>
             </li>
@@ -83,7 +88,7 @@ export default function ServicesPage() {
       {/* ------------------------------------------------------------ process */}
       <section className="mx-auto w-full max-w-6xl px-4 pt-24">
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <h2 className="iso-display text-[2rem] sm:text-[2.75rem]">
+          <h2 className="iso-display v-wipe text-[2rem] sm:text-[2.75rem]">
             The same four steps, every time.
           </h2>
           <Link
@@ -94,9 +99,9 @@ export default function ServicesPage() {
             <ChevronIcon className="size-4" />
           </Link>
         </div>
-        <ol className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <ol className="v-stagger mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {PROCESS.map((step, i) => (
-            <li key={step.title} className="iso-block bg-surface p-6">
+            <li key={step.title} className="iso-block bg-surface p-6" style={{ ["--i" as string]: i }}>
               <span className="nums block text-[13px] font-bold text-iso-sky-text">
                 0{i + 1}
               </span>
@@ -108,7 +113,7 @@ export default function ServicesPage() {
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-4 pt-24">
-        <div className="iso-block bg-iso-black px-6 py-14 text-center text-white sm:px-12">
+        <div className="iso-block v-scale bg-iso-black px-6 py-14 text-center text-white sm:px-12">
           <h2 className="iso-display mx-auto max-w-xl text-[2rem] sm:text-[3rem]">
             Not sure which one you need?
           </h2>

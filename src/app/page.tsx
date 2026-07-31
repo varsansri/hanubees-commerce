@@ -3,6 +3,8 @@ import Link from "next/link";
 import { IsoStage } from "@/components/fx/iso-stage";
 import { CheckIcon, ChevronIcon } from "@/components/icons";
 import { OrganisationJsonLd } from "@/components/site/json-ld";
+import { ServiceGlyph } from "@/components/site/service-icons";
+import { WorkShowcase } from "@/components/site/showcase";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import {
@@ -20,13 +22,20 @@ import {
  *
  * Same isometric world as the rest of the brand: solid blocks in the four
  * primaries, each with the hard offset edge that stands in for an extruded
- * side face, and heavy tight display type. No soft-shadowed card anywhere.
+ * side face, and heavy tight display type.
+ *
+ * Motion has two jobs here and they are kept apart. Continuous motion — the
+ * capability strip, the work showcase, the interfaces inside each preview —
+ * says the studio is running. Scroll-driven motion is the page assembling
+ * itself as you read, and it is driven by scroll position rather than a timer,
+ * so nothing moves off screen and scrolling back replays it in reverse.
  */
 
 export const metadata: Metadata = {
   title: "Hanubees Technologies — websites and software for businesses",
   description:
     "We design and build websites, web apps, e-commerce and AI tools for businesses. Fixed scope, fixed price, and you own the code.",
+  alternates: { canonical: "/" },
 };
 
 const PROMISES = [
@@ -85,25 +94,23 @@ export default function Home() {
       <section className="mx-auto w-full max-w-6xl px-4 pt-12 sm:pt-16">
         <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,30rem)] lg:gap-12">
           <div>
-            <span className="iso-block-sm rise inline-flex items-center bg-iso-sky px-3 py-1 text-[13px] font-bold tracking-tight text-iso-black">
-              Software studio · Coimbatore
-            </span>
-            <h1 className="iso-display rise rise-1 mt-5 text-[2.75rem] sm:text-[4.25rem]">
+            <h1 className="iso-display rise text-[2.75rem] sm:text-[4.25rem]">
               We build the software
               <br />
               your business runs on.
             </h1>
-            <p className="rise rise-2 mt-6 max-w-md text-[17px] leading-relaxed text-text-2">
+            <p className="rise rise-1 mt-6 max-w-md text-[17px] leading-relaxed text-text-2">
               Websites, web apps, online stores and AI tools — designed, built
-              and maintained by one small team. Fixed scope, fixed price, and
-              the code is yours from the first commit.
+              and maintained by one small team in Coimbatore. Fixed scope, fixed
+              price, and the code is yours from the first commit.
             </p>
-            <div className="rise rise-3 mt-8 flex flex-wrap items-center gap-3">
+            <div className="rise rise-2 mt-8 flex flex-wrap items-center gap-3">
               <Link
                 href="/contact"
-                className="iso-block iso-press inline-flex h-12 items-center bg-iso-yellow px-6 text-[15px] font-semibold text-iso-black"
+                className="iso-block iso-press group inline-flex h-12 items-center gap-2 bg-iso-yellow pr-5 pl-6 text-[15px] font-semibold text-iso-black"
               >
                 Start a project
+                <ChevronIcon className="size-4 transition-transform duration-200 ease-[var(--ease-out)] group-hover:translate-x-1" />
               </Link>
               <Link
                 href="/work"
@@ -119,47 +126,60 @@ export default function Home() {
 
           <IsoStage className="rise rise-4" />
         </div>
-
-        <ul className="mt-12 flex flex-wrap gap-2 border-t-2 border-iso-black pt-6">
-          {CAPABILITIES.map((c) => (
-            <li
-              key={c}
-              className="iso-block-sm bg-surface px-3 py-1.5 text-[13px] font-semibold tracking-tight"
-            >
-              {c}
-            </li>
-          ))}
-        </ul>
       </section>
+
+      {/* What we work in, on a slow loop — the studio is running. */}
+      <div className="marquee-hold marquee-fade mt-12 overflow-hidden border-y-2 border-iso-black py-4">
+        <div className="marquee gap-2" style={{ ["--marquee-dur" as string]: "38s" }}>
+          {[...CAPABILITIES, ...CAPABILITIES, ...CAPABILITIES, ...CAPABILITIES].map(
+            (c, i) => (
+              <span
+                key={i}
+                className="iso-block-sm shrink-0 bg-surface px-3 py-1.5 text-[13px] font-semibold tracking-tight"
+              >
+                {c}
+              </span>
+            ),
+          )}
+        </div>
+      </div>
 
       {/* ------------------------------------------------------------ services */}
       <section id="services" className="mx-auto w-full max-w-6xl px-4 pt-24">
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <h2 className="iso-display max-w-lg text-[2rem] sm:text-[2.75rem]">
+          <h2 className="iso-display v-wipe max-w-lg text-[2rem] sm:text-[2.75rem]">
             What we build.
           </h2>
           <Link
             href="/services"
-            className="inline-flex items-center gap-1 text-[14px] font-semibold text-iso-sky-text hover:underline"
+            className="link-underline inline-flex items-center gap-1 text-[14px] font-semibold text-iso-sky-text"
           >
             All services and prices
             <ChevronIcon className="size-4" />
           </Link>
         </div>
+        <span className="v-line mt-6 block h-0.5 w-full bg-iso-black" />
 
-        <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {SERVICES.map((s) => (
-            <li key={s.slug}>
+        <ul className="v-stagger mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {SERVICES.map((s, i) => (
+            <li key={s.slug} style={{ ["--i" as string]: i }}>
               <Link
                 href={`/services/${s.slug}`}
-                className={`iso-block iso-press flex h-full flex-col p-6 transition-transform duration-200 ease-[var(--ease-out)] hover:-translate-y-1 ${TONE_CLASS[s.tone]}`}
+                className={`iso-block iso-press group flex h-full flex-col p-6 transition-transform duration-200 ease-[var(--ease-out)] hover:-translate-y-1 ${TONE_CLASS[s.tone]}`}
               >
-                <h3 className="iso-display text-[1.5rem]">{s.name}</h3>
+                <ServiceGlyph
+                  slug={s.slug}
+                  className="size-9 transition-transform duration-300 ease-[var(--ease-out)] group-hover:-rotate-6 group-hover:scale-110"
+                />
+                <h3 className="iso-display mt-5 text-[1.5rem]">{s.name}</h3>
                 <p className="mt-3 flex-1 text-[14px] leading-relaxed opacity-90">
                   {s.short}
                 </p>
-                <span className="nums mt-6 text-[13px] font-bold opacity-70">
-                  {s.from} · {s.timeline}
+                <span className="mt-6 flex items-center gap-2 text-[13px] font-bold opacity-70">
+                  <span className="nums">
+                    {s.from} · {s.timeline}
+                  </span>
+                  <ChevronIcon className="ml-auto size-4 transition-transform duration-200 ease-[var(--ease-out)] group-hover:translate-x-1" />
                 </span>
               </Link>
             </li>
@@ -168,72 +188,55 @@ export default function Home() {
       </section>
 
       {/* ---------------------------------------------------------------- work */}
-      <section id="work" className="mx-auto w-full max-w-6xl px-4 pt-24">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <h2 className="iso-display max-w-lg text-[2rem] sm:text-[2.75rem]">
+      <section id="work" className="pt-24">
+        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-end justify-between gap-4 px-4">
+          <h2 className="iso-display v-wipe max-w-lg text-[2rem] sm:text-[2.75rem]">
             Things we have shipped.
           </h2>
           <Link
             href="/work"
-            className="inline-flex items-center gap-1 text-[14px] font-semibold text-iso-sky-text hover:underline"
+            className="link-underline inline-flex items-center gap-1 text-[14px] font-semibold text-iso-sky-text"
           >
             All work
             <ChevronIcon className="size-4" />
           </Link>
         </div>
 
-        <ul className="mt-10 grid gap-5 sm:grid-cols-2">
-          {PROJECTS.slice(0, 4).map((p) => (
-            <li key={p.slug}>
-              <Link href={`/work/${p.slug}`} className="group block">
-                <div
-                  className="iso-block aspect-[16/10] transition-transform duration-200 ease-[var(--ease-out)] group-hover:-translate-y-1"
-                  style={{ background: p.swatch }}
-                  aria-hidden
-                />
-                <div className="mt-4 flex items-baseline gap-2">
-                  <p className="text-[16px] font-semibold tracking-tight">{p.name}</p>
-                  <span className="nums text-[13px] text-text-3">{p.year}</span>
-                  {p.inHouse ? (
-                    <span className="iso-block-sm ml-auto bg-iso-sky px-2 py-0.5 text-[11px] font-bold text-iso-black">
-                      In-house
-                    </span>
-                  ) : null}
-                </div>
-                <p className="mt-0.5 text-[14px] text-text-2">{p.kind}</p>
-                <p className="mt-2 max-w-prose text-[14px] leading-relaxed text-text-2">
-                  {p.summary}
-                </p>
-                <span className="mt-3 inline-flex items-center gap-1 text-[13px] font-semibold text-iso-sky-text">
-                  Read the case study
-                  <ChevronIcon className="size-3.5" />
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <div className="mt-10">
+          <WorkShowcase projects={PROJECTS} />
+        </div>
+
+        <p className="mx-auto mt-6 max-w-6xl px-4 text-[13px] text-text-3">
+          Every screen above is the real interface, running. Hover to hold the
+          strip still.
+        </p>
       </section>
 
       {/* ------------------------------------------------------------- process */}
       <section id="process" className="mx-auto w-full max-w-6xl px-4 pt-24">
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <h2 className="iso-display max-w-lg text-[2rem] sm:text-[2.75rem]">
+          <h2 className="iso-display v-wipe max-w-lg text-[2rem] sm:text-[2.75rem]">
             How a project goes.
           </h2>
           <Link
             href="/process"
-            className="inline-flex items-center gap-1 text-[14px] font-semibold text-iso-sky-text hover:underline"
+            className="link-underline inline-flex items-center gap-1 text-[14px] font-semibold text-iso-sky-text"
           >
             The process in full
             <ChevronIcon className="size-4" />
           </Link>
         </div>
+        <span className="v-line mt-6 block h-0.5 w-full bg-iso-black" />
 
-        <ol className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <ol className="v-stagger mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {PROCESS.map((step, i) => (
-            <li key={step.title} className="iso-block bg-surface p-6">
+            <li
+              key={step.title}
+              className="iso-block bg-surface p-6"
+              style={{ ["--i" as string]: i }}
+            >
               <span className="nums block text-[13px] font-bold text-iso-sky-text">
-                0{i + 1}
+                Step {i + 1}
               </span>
               <h3 className="iso-display mt-2 text-[1.375rem]">{step.title}</h3>
               <p className="mt-3 text-[14px] leading-relaxed text-text-2">{step.body}</p>
@@ -244,32 +247,43 @@ export default function Home() {
 
       {/* ---------------------------------------------------------- industries */}
       <section className="mx-auto w-full max-w-6xl px-4 pt-24">
-        <h2 className="iso-display max-w-lg text-[2rem] sm:text-[2.75rem]">
-          Who we build for.
-        </h2>
-        <p className="mt-3 max-w-md text-[15px] text-text-2">
-          Not a list of everyone. These are the businesses whose problems we
-          already know the shape of.
-        </p>
-        <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {INDUSTRIES.map((ind) => (
-            <li key={ind.name} className="iso-block bg-surface p-6">
-              <h3 className="text-[16px] font-bold tracking-tight">{ind.name}</h3>
-              <p className="mt-2 text-[14px] leading-relaxed text-text-2">{ind.body}</p>
-            </li>
-          ))}
-        </ul>
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] lg:gap-12">
+          <div>
+            <h2 className="iso-display v-wipe text-[2rem] sm:text-[2.75rem]">
+              Who we build for.
+            </h2>
+            <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-text-2">
+              Not a list of everyone. These are the businesses whose problems we
+              already know the shape of — which is why the first call is short.
+            </p>
+          </div>
+
+          <dl className="v-stagger border-t-2 border-iso-black">
+            {INDUSTRIES.map((ind, i) => (
+              <div
+                key={ind.name}
+                style={{ ["--i" as string]: i }}
+                className="group flex flex-col gap-1 border-b-2 border-iso-black py-5 sm:flex-row sm:gap-8"
+              >
+                <dt className="text-[17px] font-bold tracking-tight transition-transform duration-200 ease-[var(--ease-out)] group-hover:translate-x-1 sm:w-[13rem] sm:shrink-0">
+                  {ind.name}
+                </dt>
+                <dd className="text-[15px] leading-relaxed text-text-2">{ind.body}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
       </section>
 
       {/* ------------------------------------------------------------ promises */}
       <section className="mx-auto w-full max-w-6xl px-4 pt-24">
-        <div className="iso-block bg-iso-black p-6 text-white sm:p-10">
+        <div className="iso-block v-scale bg-iso-black p-6 text-white sm:p-10">
           <h2 className="iso-display max-w-lg text-[2rem] sm:text-[2.75rem]">
             What you get either way.
           </h2>
-          <ul className="mt-10 grid gap-8 sm:grid-cols-2">
-            {PROMISES.map((p) => (
-              <li key={p.title} className="flex gap-3">
+          <ul className="v-stagger mt-10 grid gap-8 sm:grid-cols-2">
+            {PROMISES.map((p, i) => (
+              <li key={p.title} className="flex gap-3" style={{ ["--i" as string]: i }}>
                 <CheckIcon className="mt-1 size-5 shrink-0 text-iso-yellow" />
                 <div>
                   <h3 className="text-[16px] font-bold tracking-tight">{p.title}</h3>
@@ -285,7 +299,7 @@ export default function Home() {
 
       {/* --------------------------------------------------------- engagements */}
       <section id="pricing" className="mx-auto w-full max-w-6xl px-4 pt-24">
-        <h2 className="iso-display text-[2rem] sm:text-[2.75rem]">
+        <h2 className="iso-display v-wipe text-[2rem] sm:text-[2.75rem]">
           Three ways to work with us.
         </h2>
         <p className="mt-3 max-w-md text-[15px] text-text-2">
@@ -293,10 +307,11 @@ export default function Home() {
           scope document, before any work begins.
         </p>
 
-        <ul className="mt-10 grid gap-5 lg:grid-cols-3">
-          {ENGAGEMENTS.map((e) => (
+        <ul className="v-stagger mt-10 grid gap-5 lg:grid-cols-3">
+          {ENGAGEMENTS.map((e, i) => (
             <li
               key={e.name}
+              style={{ ["--i" as string]: i }}
               className={`iso-block flex flex-col p-6 ${
                 e.featured ? "bg-iso-yellow text-iso-black" : "bg-surface"
               }`}
@@ -345,13 +360,13 @@ export default function Home() {
 
       {/* ----------------------------------------------------------------- faq */}
       <section id="faq" className="mx-auto w-full max-w-6xl px-4 pt-24">
-        <h2 className="iso-display text-[2rem] sm:text-[2.75rem]">
+        <h2 className="iso-display v-wipe text-[2rem] sm:text-[2.75rem]">
           Questions we get asked.
         </h2>
 
-        <ul className="mt-10 grid gap-3 lg:grid-cols-2">
-          {FAQS.map((f) => (
-            <li key={f.q}>
+        <ul className="v-stagger mt-10 grid gap-3 lg:grid-cols-2">
+          {FAQS.map((f, i) => (
+            <li key={f.q} style={{ ["--i" as string]: i }}>
               <details className="iso-block group bg-surface p-5 [&[open]_.faq-mark]:-rotate-90">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[16px] font-semibold tracking-tight">
                   {f.q}
@@ -366,20 +381,27 @@ export default function Home() {
 
       {/* ----------------------------------------------------------------- cta */}
       <section className="mx-auto w-full max-w-6xl px-4 pt-24">
-        <div className="iso-block bg-iso-yellow px-6 py-14 text-center text-iso-black sm:px-12">
-          <h2 className="iso-display mx-auto max-w-2xl text-[2rem] sm:text-[3rem]">
-            Tell us what you are trying to build.
-          </h2>
-          <p className="mx-auto mt-4 max-w-md text-[15px] opacity-80">
-            One call, an hour, no charge. You leave with a plan — whether or not
-            we are the ones who build it.
-          </p>
-          <Link
-            href="/contact"
-            className="iso-block-sm iso-press mt-8 inline-flex h-12 items-center bg-iso-black px-7 text-[15px] font-semibold text-white"
-          >
-            Start a project
-          </Link>
+        <div className="iso-block v-scale relative overflow-hidden bg-iso-yellow px-6 py-14 text-center text-iso-black sm:px-12">
+          <span
+            className="anim-drift absolute -inset-[20%] bg-[radial-gradient(circle_at_30%_20%,#ffffff_0%,transparent_45%),radial-gradient(circle_at_75%_80%,#90d0f0_0%,transparent_50%)] opacity-60"
+            aria-hidden
+          />
+          <div className="relative">
+            <h2 className="iso-display mx-auto max-w-2xl text-[2rem] sm:text-[3rem]">
+              Tell us what you are trying to build.
+            </h2>
+            <p className="mx-auto mt-4 max-w-md text-[15px] opacity-80">
+              One call, an hour, no charge. You leave with a plan — whether or
+              not we are the ones who build it.
+            </p>
+            <Link
+              href="/contact"
+              className="iso-block-sm iso-press group mt-8 inline-flex h-12 items-center gap-2 bg-iso-black pr-6 pl-7 text-[15px] font-semibold text-white"
+            >
+              Start a project
+              <ChevronIcon className="size-4 transition-transform duration-200 ease-[var(--ease-out)] group-hover:translate-x-1" />
+            </Link>
+          </div>
         </div>
       </section>
 

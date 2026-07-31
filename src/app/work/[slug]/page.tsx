@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CheckIcon, ChevronIcon } from "@/components/icons";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
+import { ProjectPreview } from "@/components/site/previews";
 import { BreadcrumbJsonLd } from "@/components/site/json-ld";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
@@ -72,10 +73,10 @@ export default async function CaseStudy({
           {project.summary}
         </p>
 
-        <div
-          className="iso-block mt-10 aspect-[16/9] w-full"
-          style={{ background: project.swatch }}
-          aria-hidden
+        <ProjectPreview
+          slug={project.slug}
+          swatch={project.swatch}
+          className="v-scale mt-10 w-full"
         />
 
         <dl className="mt-10 grid gap-5 border-t-2 border-iso-black pt-8 sm:grid-cols-3">
@@ -106,7 +107,7 @@ export default async function CaseStudy({
       {/* -------------------------------------------------------------- story */}
       <section className="mx-auto w-full max-w-6xl px-4 pt-16">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-12">
-          <h2 className="iso-display text-[2rem] sm:text-[2.5rem]">Where it started.</h2>
+          <h2 className="iso-display v-wipe text-[2rem] sm:text-[2.5rem]">Where it started.</h2>
           <p className="max-w-prose text-[17px] leading-relaxed text-text-2">
             {project.context}
           </p>
@@ -115,14 +116,14 @@ export default async function CaseStudy({
 
       <section className="mx-auto w-full max-w-6xl px-4 pt-16">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-12">
-          <h2 className="iso-display text-[2rem] sm:text-[2.5rem]">What we did.</h2>
+          <h2 className="iso-display v-wipe text-[2rem] sm:text-[2.5rem]">What we did.</h2>
           <div>
             <p className="max-w-prose text-[17px] leading-relaxed text-text-2">
               {project.body}
             </p>
-            <ul className="mt-8 flex flex-col gap-4">
+            <ul className="v-stagger mt-8 flex flex-col gap-4">
               {project.did.map((d, i) => (
-                <li key={d} className="iso-block flex gap-4 bg-surface p-5">
+                <li key={d} className="iso-block flex gap-4 bg-surface p-5" style={{ ["--i" as string]: i }}>
                   <span className="nums text-[13px] font-bold text-iso-sky-text">
                     0{i + 1}
                   </span>
@@ -135,7 +136,7 @@ export default async function CaseStudy({
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-4 pt-16">
-        <div className="iso-block bg-iso-black p-6 text-white sm:p-10">
+        <div className="iso-block v-scale bg-iso-black p-6 text-white sm:p-10">
           <h2 className="text-[13px] font-bold tracking-tight uppercase text-iso-yellow">
             Where it stands
           </h2>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronIcon } from "@/components/icons";
+import { ProjectPreview } from "@/components/site/previews";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { PROJECTS } from "@/lib/site";
@@ -31,14 +32,19 @@ export default function WorkPage() {
         {PROJECTS.map((p, i) => (
           <article
             key={p.slug}
-            className="mt-12 grid gap-8 border-t-2 border-iso-black pt-12 lg:grid-cols-2 lg:gap-12"
+            className="v-rise mt-12 grid gap-8 border-t-2 border-iso-black pt-12 lg:grid-cols-2 lg:gap-12"
           >
             <Link
               href={`/work/${p.slug}`}
               aria-label={`${p.name} case study`}
-              className={`iso-block aspect-[16/10] transition-transform duration-200 ease-[var(--ease-out)] hover:-translate-y-1 ${i % 2 ? "lg:order-2" : ""}`}
-              style={{ background: p.swatch }}
-            />
+              className={`block ${i % 2 ? "lg:order-2" : ""}`}
+            >
+              <ProjectPreview
+                slug={p.slug}
+                swatch={p.swatch}
+                className="transition-transform duration-200 ease-[var(--ease-out)] hover:-translate-y-1"
+              />
+            </Link>
 
             <div>
               <div className="flex flex-wrap items-center gap-2">
@@ -53,7 +59,7 @@ export default function WorkPage() {
                 ) : null}
               </div>
 
-              <h2 className="iso-display mt-4 text-[2rem] sm:text-[2.5rem]">{p.name}</h2>
+              <h2 className="iso-display v-wipe mt-4 text-[2rem] sm:text-[2.5rem]">{p.name}</h2>
               <p className="mt-4 max-w-prose text-[16px] leading-relaxed text-text-2">
                 {p.summary}
               </p>

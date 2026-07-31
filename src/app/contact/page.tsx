@@ -24,7 +24,7 @@ export default function ContactPage() {
       <SiteHeader />
 
       <section className="mx-auto w-full max-w-6xl px-4 pt-12 sm:pt-16">
-        <h1 className="iso-display max-w-3xl text-[2.5rem] sm:text-[3.75rem]">
+        <h1 className="iso-display rise max-w-3xl text-[2.5rem] sm:text-[3.75rem]">
           Start a project.
         </h1>
         <p className="mt-6 max-w-lg text-[17px] leading-relaxed text-text-2">
@@ -34,7 +34,7 @@ export default function ContactPage() {
         </p>
 
         <div className="mt-12 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:gap-12">
-          <ContactForm />
+          <div className="v-scale"><ContactForm /></div>
 
           <div className="flex flex-col gap-5">
             <div className="iso-block bg-iso-yellow p-6 text-iso-black">
@@ -69,10 +69,10 @@ export default function ContactPage() {
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-4 pt-24">
-        <h2 className="iso-display text-[2rem] sm:text-[2.75rem]">What happens next.</h2>
-        <ol className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <h2 className="iso-display v-wipe text-[2rem] sm:text-[2.75rem]">What happens next.</h2>
+        <ol className="v-stagger mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {PROCESS.map((step, i) => (
-            <li key={step.title} className="iso-block bg-surface p-6">
+            <li key={step.title} className="iso-block bg-surface p-6" style={{ ["--i" as string]: i }}>
               <span className="nums block text-[13px] font-bold text-iso-sky-text">
                 0{i + 1}
               </span>

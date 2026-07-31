@@ -354,6 +354,257 @@ body {
 }
 
 /* ==========================================================================
+   Company site — scroll-driven entrances
+   Driven by the scroll position rather than a timer, so nothing animates until
+   it is on screen and scrolling back up replays it in reverse. The default
+   state is the finished one: where `animation-timeline` is unsupported the
+   page is simply already composed, and no JavaScript is involved either way.
+   ========================================================================== */
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+/* Headings uncover from behind their own baseline rather than sliding. */
+@keyframes wipe-in {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 108% 0);
+    transform: translateY(6px);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.965);
+  }
+}
+
+@keyframes draw-x {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .v-rise,
+    .v-wipe,
+    .v-scale {
+      /* Duration stays `auto`: the range, not a clock, decides how long this
+         takes, so the entrance is tied to the reader's own scrolling. */
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 8% cover 34%;
+    }
+    .v-rise {
+      animation-name: rise-in;
+    }
+    .v-wipe {
+      animation-name: wipe-in;
+      animation-range: entry 10% cover 32%;
+    }
+    .v-scale {
+      animation-name: scale-in;
+    }
+
+    /* A group cascades: each child starts a little further into the range.
+       Timeline-driven animations ignore animation-delay, so the stagger is a
+       shift in range instead, read from --i on the child. */
+    .v-stagger > * {
+      animation-name: rise-in;
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry calc(6% + var(--i, 0) * 5%) cover
+        calc(30% + var(--i, 0) * 5%);
+    }
+
+    /* A rule that draws itself along the section it introduces. */
+    .v-line {
+      transform-origin: left center;
+      animation-name: draw-x;
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 30%;
+    }
+  }
+}
+
+/* ==========================================================================
+   Company site — continuous motion
+   Marquees and the living previews. All transform-only, all paused when the
+   reader has asked for less motion.
+   ========================================================================== */
+
+@keyframes marquee-x {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-y {
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+/* The track holds two identical copies, so the halfway point is seamless. */
+.marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee-x var(--marquee-dur, 48s) linear infinite;
+}
+.marquee-y {
+  animation: marquee-y var(--marquee-dur, 14s) linear infinite;
+}
+
+/* Reading beats moving: hovering or tabbing into the strip stops it. */
+.marquee-hold:hover .marquee,
+.marquee-hold:focus-within .marquee {
+  animation-play-state: paused;
+}
+
+/* Edges dissolve instead of cutting off mid-card. */
+.marquee-fade {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 5rem,
+    #000 calc(100% - 5rem),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 5rem,
+    #000 calc(100% - 5rem),
+    transparent
+  );
+}
+
+/* Preview interiors ------------------------------------------------------- */
+
+/* Chart bars grow from the axis, one after another, then hold. */
+@keyframes bar-rise {
+  0% {
+    transform: scaleY(0.08);
+  }
+  22%,
+  86% {
+    transform: scaleY(1);
+  }
+  100% {
+    transform: scaleY(0.08);
+  }
+}
+
+/* Cards arrive in sequence and leave together — a loop that reads as a demo. */
+@keyframes pop-loop {
+  0%,
+  6% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  16%,
+  84% {
+    opacity: 1;
+    transform: none;
+  }
+  94%,
+  100% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+/* A slow drift, so a still image never looks frozen. */
+@keyframes drift {
+  50% {
+    transform: translate3d(-2.5%, -2%, 0) scale(1.07);
+  }
+}
+
+/* The camera reading the plate. */
+@keyframes sweep {
+  0% {
+    transform: translateY(-10%);
+    opacity: 0;
+  }
+  12%,
+  60% {
+    opacity: 1;
+  }
+  72%,
+  100% {
+    transform: translateY(320%);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-soft {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.anim-bar {
+  transform-origin: bottom;
+  animation: bar-rise 6s var(--ease-in-out) infinite;
+}
+.anim-pop {
+  animation: pop-loop 7s var(--ease-out) infinite;
+}
+.anim-drift {
+  animation: drift 18s var(--ease-in-out) infinite;
+  will-change: transform;
+}
+.anim-sweep {
+  animation: sweep 5s var(--ease-in-out) infinite;
+}
+.anim-pulse {
+  animation: pulse-soft 3.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee,
+  .marquee-y,
+  .anim-bar,
+  .anim-pop,
+  .anim-drift,
+  .anim-sweep,
+  .anim-pulse {
+    animation: none;
+  }
+  /* A stopped marquee must still be reachable. */
+  .marquee-hold {
+    overflow-x: auto;
+  }
+}
+
+/* An underline that grows from the side the eye is already on. */
+.link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1.5px;
+  transition: background-size var(--dur-pop) var(--ease-out);
+}
+.link-underline:hover,
+.link-underline:focus-visible {
+  background-size: 100% 1.5px;
+}
+
+/* ==========================================================================
    The bee, animated in 2D
    Layers cut from the artwork; everything below is transform-only so it stays
    on the compositor and runs on any device.

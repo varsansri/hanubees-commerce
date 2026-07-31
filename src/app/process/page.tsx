@@ -37,7 +37,7 @@ export default function ProcessPage() {
       <SiteHeader />
 
       <section className="mx-auto w-full max-w-6xl px-4 pt-12 sm:pt-16">
-        <h1 className="iso-display max-w-3xl text-[2.5rem] sm:text-[3.75rem]">
+        <h1 className="iso-display rise max-w-3xl text-[2.5rem] sm:text-[3.75rem]">
           From first call to live, in four steps.
         </h1>
         <p className="mt-6 max-w-lg text-[17px] leading-relaxed text-text-2">
@@ -51,7 +51,7 @@ export default function ProcessPage() {
         {PROCESS.map((step, i) => (
           <section
             key={step.title}
-            className="mt-12 grid gap-8 border-t-2 border-iso-black pt-12 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-12"
+            className="v-rise mt-12 grid gap-8 border-t-2 border-iso-black pt-12 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-12"
           >
             <div>
               <span className="nums iso-display block text-[3.5rem] text-iso-sky-text">
@@ -101,12 +101,12 @@ export default function ProcessPage() {
       </div>
 
       <section className="mx-auto w-full max-w-6xl px-4 pt-24">
-        <h2 className="iso-display text-[2rem] sm:text-[2.75rem]">
+        <h2 className="iso-display v-wipe text-[2rem] sm:text-[2.75rem]">
           Four rules we hold ourselves to.
         </h2>
-        <ul className="mt-10 grid gap-5 sm:grid-cols-2">
-          {RULES.map((r) => (
-            <li key={r.title} className="iso-block bg-surface p-6">
+        <ul className="v-stagger mt-10 grid gap-5 sm:grid-cols-2">
+          {RULES.map((r, i) => (
+            <li key={r.title} className="iso-block bg-surface p-6" style={{ ["--i" as string]: i }}>
               <h3 className="iso-display text-[1.5rem]">{r.title}</h3>
               <p className="mt-3 text-[15px] leading-relaxed text-text-2">{r.body}</p>
             </li>
@@ -129,7 +129,7 @@ export default function ProcessPage() {
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-4 pt-24">
-        <div className="iso-block bg-iso-black px-6 py-14 text-center text-white sm:px-12">
+        <div className="iso-block v-scale bg-iso-black px-6 py-14 text-center text-white sm:px-12">
           <h2 className="iso-display mx-auto max-w-xl text-[2rem] sm:text-[3rem]">
             Step one is a free hour.
           </h2>

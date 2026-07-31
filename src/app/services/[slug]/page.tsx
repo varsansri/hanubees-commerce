@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { CheckIcon, ChevronIcon } from "@/components/icons";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import { BreadcrumbJsonLd, ServiceJsonLd } from "@/components/site/json-ld";
+import { ProjectPreview } from "@/components/site/previews";
+import { ServiceGlyph } from "@/components/site/service-icons";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { PROCESS, PROJECTS, SERVICES, TONE_CLASS, serviceBySlug } from "@/lib/site";
@@ -60,7 +62,8 @@ export default async function ServicePage({
 
         <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:gap-12">
           <div>
-            <h1 className="iso-display text-[2.5rem] sm:text-[3.75rem]">
+            <ServiceGlyph slug={service.slug} className="size-11 text-iso-sky-text" />
+            <h1 className="iso-display mt-5 text-[2.5rem] sm:text-[3.75rem]">
               {service.name}
             </h1>
             <p className="mt-5 max-w-lg text-[19px] leading-snug font-medium">
@@ -92,7 +95,7 @@ export default async function ServicePage({
 
       {/* ------------------------------------------------------------ problem */}
       <section className="mx-auto w-full max-w-6xl px-4 pt-16">
-        <div className="iso-block bg-surface p-6 sm:p-10">
+        <div className="iso-block v-scale bg-surface p-6 sm:p-10">
           <h2 className="text-[13px] font-bold tracking-tight uppercase text-text-3">
             When people come to us for this
           </h2>
@@ -104,7 +107,7 @@ export default async function ServicePage({
       <section className="mx-auto w-full max-w-6xl px-4 pt-16">
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-12">
           <div>
-            <h2 className="iso-display text-[2rem]">What is included</h2>
+            <h2 className="iso-display v-wipe text-[2rem]">What is included</h2>
             <ul className="mt-6 flex flex-col gap-3 text-[15px]">
               {service.includes.map((point) => (
                 <li key={point} className="flex gap-2.5">
@@ -116,7 +119,7 @@ export default async function ServicePage({
           </div>
 
           <div>
-            <h2 className="iso-display text-[2rem]">What you end up holding</h2>
+            <h2 className="iso-display v-wipe text-[2rem]">What you end up holding</h2>
             <ul className="mt-6 flex flex-col gap-3 text-[15px]">
               {service.deliverables.map((point) => (
                 <li key={point} className="flex gap-2.5">
@@ -141,7 +144,7 @@ export default async function ServicePage({
       {/* ------------------------------------------------------------ process */}
       <section className="mx-auto w-full max-w-6xl px-4 pt-20">
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <h2 className="iso-display text-[2rem] sm:text-[2.5rem]">How it runs.</h2>
+          <h2 className="iso-display v-wipe text-[2rem] sm:text-[2.5rem]">How it runs.</h2>
           <Link
             href="/process"
             className="inline-flex items-center gap-1 text-[14px] font-semibold text-iso-sky-text hover:underline"
@@ -150,9 +153,9 @@ export default async function ServicePage({
             <ChevronIcon className="size-4" />
           </Link>
         </div>
-        <ol className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <ol className="v-stagger mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {PROCESS.map((step, i) => (
-            <li key={step.title} className="iso-block bg-surface p-6">
+            <li key={step.title} className="iso-block bg-surface p-6" style={{ ["--i" as string]: i }}>
               <span className="nums block text-[13px] font-bold text-iso-sky-text">
                 0{i + 1}
               </span>
@@ -166,17 +169,17 @@ export default async function ServicePage({
       {/* ------------------------------------------------------------ related */}
       {related.length ? (
         <section className="mx-auto w-full max-w-6xl px-4 pt-20">
-          <h2 className="iso-display text-[2rem] sm:text-[2.5rem]">
+          <h2 className="iso-display v-wipe text-[2rem] sm:text-[2.5rem]">
             Where we have done it.
           </h2>
           <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((p) => (
               <li key={p.slug}>
                 <Link href={`/work/${p.slug}`} className="group block">
-                  <div
-                    className="iso-block aspect-[16/10] transition-transform duration-200 ease-[var(--ease-out)] group-hover:-translate-y-1"
-                    style={{ background: p.swatch }}
-                    aria-hidden
+                  <ProjectPreview
+                    slug={p.slug}
+                    swatch={p.swatch}
+                    className="transition-transform duration-200 ease-[var(--ease-out)] group-hover:-translate-y-1"
                   />
                   <p className="mt-4 text-[16px] font-semibold tracking-tight">{p.name}</p>
                   <p className="mt-0.5 text-[14px] text-text-2">{p.kind}</p>
@@ -206,7 +209,7 @@ export default async function ServicePage({
 
       {/* ---------------------------------------------------------------- cta */}
       <section className="mx-auto w-full max-w-6xl px-4 pt-20">
-        <div className="iso-block bg-iso-yellow px-6 py-14 text-center text-iso-black sm:px-12">
+        <div className="iso-block v-scale bg-iso-yellow px-6 py-14 text-center text-iso-black sm:px-12">
           <h2 className="iso-display mx-auto max-w-xl text-[2rem] sm:text-[2.75rem]">
             Get a price for this.
           </h2>
