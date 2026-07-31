@@ -266,8 +266,10 @@ function Probe({ report }: { report: (line: string) => void }) {
     frames.current += 1;
     if (frames.current % 20) return;
     const r = gl.info.render;
+    const el = gl.domElement;
     report(
-      `canvas=${Math.round(size.width)}x${Math.round(size.height)} ` +
+      `css=${el.clientWidth}x${el.clientHeight} buf=${el.width}x${el.height} ` +
+        `r3f=${Math.round(size.width)}x${Math.round(size.height)} ` +
         `frames=${frames.current} kids=${bee.children.length} | ` +
         `drawCalls=${r.calls} tris=${r.triangles} lines=${r.lines} | ` +
         `ctxLost=${gl.getContext().isContextLost()}`,
@@ -293,6 +295,12 @@ export function BeeScene({
       gl={{ antialias: true, alpha: true }}
       flat
       style={{ position: "absolute", inset: 0 }}
+      onCreated={({ gl }) => {
+        // Under the debug flag the canvas clears to solid green. If the layer
+        // turns green the canvas paints and the bee is outside the frustum; if
+        // it does not, the canvas is not reaching the screen at all.
+        if (report) gl.setClearColor("#00c853", 1);
+      }}
     >
       {report ? <Probe report={report} /> : null}
       <Bee />
