@@ -24,9 +24,16 @@ export function useEffectTier(): EffectTier {
     const small = window.matchMedia("(max-width: 640px)");
     const coarse = window.matchMedia("(pointer: coarse)");
 
+    // `?fx=on` overrides the reduced-motion preference for this page view only.
+    // It exists so the site's own authors can see what a visitor with motion
+    // enabled sees, from a device that has it switched off system-wide. It is
+    // never sticky and never the default: a stated preference still wins for
+    // everyone who has not deliberately typed this into the address bar.
+    const forced = new URLSearchParams(window.location.search).get("fx") === "on";
+
     const evaluate = () => {
       // A stated preference always wins.
-      if (motion.matches) return setTier("off");
+      if (motion.matches && !forced) return setTier("off");
 
       // Cheap capability probe — no context here means the effect would fail.
       const canvas = document.createElement("canvas");

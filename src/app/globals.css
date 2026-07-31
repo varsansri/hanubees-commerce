@@ -342,10 +342,15 @@ body {
   animation-delay: 240ms;
 }
 
+/* Every reduced-motion rule below is scoped to `:root:not([data-fx="on"])`.
+   `?fx=on` sets that attribute for one page view, so the people who build this
+   site can see what a visitor with motion enabled sees, from a device that has
+   it switched off system-wide. Nobody reaches it by accident, and a stated
+   preference still wins for every real visitor. */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  :root:not([data-fx="on"]) *,
+  :root:not([data-fx="on"]) *::before,
+  :root:not([data-fx="on"]) *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -391,52 +396,50 @@ body {
 }
 
 @supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .v-rise,
-    .v-wipe,
-    .v-scale {
-      /* Duration stays `auto`: the range, not a clock, decides how long this
-         takes, so the entrance is tied to the reader's own scrolling. */
-      animation-duration: auto;
-      animation-timing-function: linear;
-      animation-fill-mode: both;
-      animation-timeline: view();
-      animation-range: entry 8% cover 34%;
-    }
-    .v-rise {
-      animation-name: rise-in;
-    }
-    .v-wipe {
-      animation-name: wipe-in;
-      animation-range: entry 10% cover 32%;
-    }
-    .v-scale {
-      animation-name: scale-in;
-    }
+  .v-rise,
+  .v-wipe,
+  .v-scale {
+    /* Duration stays `auto`: the range, not a clock, decides how long this
+       takes, so the entrance is tied to the reader's own scrolling. */
+    animation-duration: auto;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+    animation-timeline: view();
+    animation-range: entry 8% cover 34%;
+  }
+  .v-rise {
+    animation-name: rise-in;
+  }
+  .v-wipe {
+    animation-name: wipe-in;
+    animation-range: entry 10% cover 32%;
+  }
+  .v-scale {
+    animation-name: scale-in;
+  }
 
-    /* A group cascades: each child starts a little further into the range.
-       Timeline-driven animations ignore animation-delay, so the stagger is a
-       shift in range instead, read from --i on the child. */
-    .v-stagger > * {
-      animation-name: rise-in;
-      animation-duration: auto;
-      animation-timing-function: linear;
-      animation-fill-mode: both;
-      animation-timeline: view();
-      animation-range: entry calc(6% + var(--i, 0) * 5%) cover
-        calc(30% + var(--i, 0) * 5%);
-    }
+  /* A group cascades: each child starts a little further into the range.
+     Timeline-driven animations ignore animation-delay, so the stagger is a
+     shift in range instead, read from --i on the child. */
+  .v-stagger > * {
+    animation-name: rise-in;
+    animation-duration: auto;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+    animation-timeline: view();
+    animation-range: entry calc(6% + var(--i, 0) * 5%) cover
+      calc(30% + var(--i, 0) * 5%);
+  }
 
-    /* A rule that draws itself along the section it introduces. */
-    .v-line {
-      transform-origin: left center;
-      animation-name: draw-x;
-      animation-duration: auto;
-      animation-timing-function: linear;
-      animation-fill-mode: both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 30%;
-    }
+  /* A rule that draws itself along the section it introduces. */
+  .v-line {
+    transform-origin: left center;
+    animation-name: draw-x;
+    animation-duration: auto;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 30%;
   }
 }
 
@@ -576,17 +579,25 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .marquee,
-  .marquee-y,
-  .anim-bar,
-  .anim-pop,
-  .anim-drift,
-  .anim-sweep,
-  .anim-pulse {
+  :root:not([data-fx="on"]) .v-rise,
+  :root:not([data-fx="on"]) .v-wipe,
+  :root:not([data-fx="on"]) .v-scale,
+  :root:not([data-fx="on"]) .v-line,
+  :root:not([data-fx="on"]) .v-stagger > * {
+    animation-name: none;
+  }
+
+  :root:not([data-fx="on"]) .marquee,
+  :root:not([data-fx="on"]) .marquee-y,
+  :root:not([data-fx="on"]) .anim-bar,
+  :root:not([data-fx="on"]) .anim-pop,
+  :root:not([data-fx="on"]) .anim-drift,
+  :root:not([data-fx="on"]) .anim-sweep,
+  :root:not([data-fx="on"]) .anim-pulse {
     animation: none;
   }
   /* A stopped marquee must still be reachable. */
-  .marquee-hold {
+  :root:not([data-fx="on"]) .marquee-hold {
     overflow-x: auto;
   }
 }
@@ -672,10 +683,10 @@ body {
 
 /* A stated preference wins: hold the finished pose, wings still. */
 @media (prefers-reduced-motion: reduce) {
-  .bee-hover,
-  .bee-wing-back,
-  .bee-wing-front,
-  .bee-shadow {
+  :root:not([data-fx="on"]) .bee-hover,
+  :root:not([data-fx="on"]) .bee-wing-back,
+  :root:not([data-fx="on"]) .bee-wing-front,
+  :root:not([data-fx="on"]) .bee-shadow {
     animation: none;
   }
 }

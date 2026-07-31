@@ -60,4 +60,4 @@ export function ThemeToggle() {
 }
 
 /** Runs before paint so a stored theme never flashes the wrong colours. */
-export const themeScript = `(function(){try{var t=localStorage.getItem('hb-theme');if(t){document.documentElement.dataset.theme=t}}catch(e){}})()`;
+export const themeScript = `(function(){try{var t=localStorage.getItem('hb-theme');if(t){document.documentElement.dataset.theme=t}}catch(e){}try{if(location.search.indexOf('fx=on')>-1){document.documentElement.dataset.fx='on'}}catch(e){}})()`;
