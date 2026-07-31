@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 import { useEffectTier } from "./use-effects-enabled";
 
 /**
@@ -22,11 +23,34 @@ const BeeScene = dynamic(() => import("./bee-scene").then((m) => m.BeeScene), {
 
 export function BeeFlight() {
   const tier = useEffectTier();
-  if (tier === "off") return null;
+
+  // `?bee=debug` outlines the layer and prints the tier it resolved to. There
+  // is no browser in the environment this was built in, so this is how the
+  // difference between "never mounted", "mounted but empty" and "drawing
+  // off-screen" gets established. No visitor reaches it without typing it.
+  const [debug, setDebug] = useState(false);
+  useEffect(() => {
+    setDebug(new URLSearchParams(window.location.search).get("bee") === "debug");
+  }, []);
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-20" aria-hidden>
-      <BeeScene quality={tier} />
-    </div>
+    <>
+      {debug ? (
+        <div className="fixed top-24 left-4 z-50 bg-red-600 px-2 py-1 font-mono text-[12px] text-white">
+          tier={tier} layer={tier === "off" ? "none" : "mounted"}
+        </div>
+      ) : null}
+
+      {tier === "off" ? null : (
+        <div
+          className={`pointer-events-none fixed inset-0 z-20 ${
+            debug ? "outline-4 outline-red-600" : ""
+          }`}
+          aria-hidden
+        >
+          <BeeScene quality={tier} />
+        </div>
+      )}
+    </>
   );
 }
