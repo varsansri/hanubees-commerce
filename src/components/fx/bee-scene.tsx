@@ -174,10 +174,17 @@ function Bee() {
     if (!group || !body) return;
 
     const f = flight.current;
-    // A backgrounded tab stops asking for frames; the first one back reports
-    // the whole absence. Clamp it, and keep our own time from those clamped
-    // steps, so the idle drift resumes rather than teleporting.
-    const step = Math.min(delta, 1 / 30);
+    // Clamped at BOTH ends, and the floor is not optional.
+    //
+    // The ceiling is the familiar one: a backgrounded tab stops asking for
+    // frames, and the first one back reports the whole absence as one delta.
+    //
+    // The floor exists because the first frame can report a delta of exactly
+    // zero, and this loop divides by it to get a velocity. 0/0 is NaN, NaN
+    // spreads into the wingbeat, the hover and the bank angle, and every
+    // vertex then projects to NaN — the GPU draws the bee's triangles into
+    // nowhere. It renders perfectly and is invisible forever, from one frame.
+    const step = Math.min(Math.max(delta, 1 / 240), 1 / 30);
     f.time += step;
     const t = f.time;
 
@@ -255,55 +262,7 @@ function Bee() {
   );
 }
 
-/** Reports what the renderer thinks is true, for the `?bee=debug` probe. */
-function Probe({ report }: { report: (line: string) => void }) {
-  const size = useThree((s) => s.size);
-  const frames = useRef(0);
-  const bee = useThree((s) => s.scene);
-  const gl = useThree((s) => s.gl);
-  const camera = useThree((s) => s.camera);
-
-  useFrame(() => {
-    frames.current += 1;
-    if (frames.current % 20) return;
-    const r = gl.info.render;
-    const el = gl.domElement;
-    const cam = camera as THREE.OrthographicCamera;
-    // Where does the body actually land in normalised device coordinates?
-    const body = bee.children[0]?.children[0]?.children[0]?.children[0];
-    const ndc = new THREE.Vector3();
-    let where = "no body";
-    if (body) {
-      body.getWorldPosition(ndc);
-      const scale = new THREE.Vector3();
-      body.getWorldScale(scale);
-      ndc.project(cam);
-      where =
-        `ndc=${ndc.x.toFixed(2)},${ndc.y.toFixed(2)},${ndc.z.toFixed(2)} ` +
-        `scale=${scale.x.toFixed(2)} vis=${body.visible}`;
-    }
-    report(
-      `css=${el.clientWidth}x${el.clientHeight} buf=${el.width}x${el.height} ` +
-        `r3f=${Math.round(size.width)}x${Math.round(size.height)} ` +
-        `| frustum L${Math.round(cam.left)} R${Math.round(cam.right)} ` +
-        `T${Math.round(cam.top)} B${Math.round(cam.bottom)} zoom=${cam.zoom} ` +
-        `camZ=${Math.round(cam.position.z)} | ${where} | ` +
-        `frames=${frames.current} kids=${bee.children.length} | ` +
-        `drawCalls=${r.calls} tris=${r.triangles} lines=${r.lines} | ` +
-        `ctxLost=${gl.getContext().isContextLost()}`,
-    );
-  });
-
-  return null;
-}
-
-export function BeeScene({
-  quality,
-  report,
-}: {
-  quality: "lite" | "full";
-  report?: (line: string) => void;
-}) {
+export function BeeScene({ quality }: { quality: "lite" | "full" }) {
   return (
     <Canvas
       orthographic
@@ -313,14 +272,7 @@ export function BeeScene({
       gl={{ antialias: true, alpha: true }}
       flat
       style={{ position: "absolute", inset: 0 }}
-      onCreated={({ gl }) => {
-        // Under the debug flag the canvas clears to solid green. If the layer
-        // turns green the canvas paints and the bee is outside the frustum; if
-        // it does not, the canvas is not reaching the screen at all.
-        if (report) gl.setClearColor("#00c853", 1);
-      }}
     >
-      {report ? <Probe report={report} /> : null}
       <Bee />
     </Canvas>
   );
