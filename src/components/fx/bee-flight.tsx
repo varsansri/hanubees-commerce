@@ -47,7 +47,7 @@ export function BeeFlight() {
       {tier === "off" ? null : (
         <div
           className={`pointer-events-none fixed inset-0 z-20 ${
-            debug ? "outline-4 outline-red-600" : ""
+            debug ? "bg-red-500/20" : ""
           }`}
           aria-hidden
         >
