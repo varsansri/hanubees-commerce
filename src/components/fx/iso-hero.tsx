@@ -29,32 +29,42 @@ export function IsoHero({ className = "" }: { className?: string }) {
   const three = tier !== "off" && inView;
 
   return (
-    <div
-      ref={ref}
-      className={`iso-block relative overflow-hidden bg-iso-white ${className}`}
-    >
-      {/* The ground the town sits on, so the canvas never floats on nothing. */}
-      <span
-        className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_75%,#eaf5fc_0%,#ffffff_60%)]"
-        aria-hidden
-      />
+    <div className={className}>
+      <div
+        ref={ref}
+        className="iso-block relative overflow-hidden bg-iso-white"
+      >
+        {/* The ground the town sits on, so the canvas never floats on nothing. */}
+        <span
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_75%,#eaf5fc_0%,#ffffff_60%)]"
+          aria-hidden
+        />
 
-      <div className="relative aspect-[4/3] w-full sm:aspect-[16/11]">
-        {three ? (
-          <IsoScene
-            quality={tier === "lite" ? "lite" : "full"}
-            active={onScreen}
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center p-6">
-            <Bee2D size={340} priority className="max-w-[78%]" />
-          </div>
-        )}
+        <div className="relative aspect-[4/3] w-full sm:aspect-[16/11]">
+          {three ? (
+            <IsoScene
+              quality={tier === "lite" ? "lite" : "full"}
+              active={onScreen}
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center p-6">
+              <Bee2D size={340} priority className="max-w-[78%]" />
+            </div>
+          )}
+        </div>
+
+        <span className="iso-block-sm absolute bottom-3 left-3 flex items-center gap-2 bg-iso-white/85 px-2.5 py-1.5 text-[13px] font-semibold tracking-tight text-iso-black backdrop-blur-sm sm:bottom-4 sm:left-4">
+          Hanubees
+        </span>
       </div>
 
-      <span className="iso-block-sm absolute bottom-3 left-3 flex items-center gap-2 bg-iso-white/85 px-2.5 py-1.5 text-[13px] font-semibold tracking-tight text-iso-black backdrop-blur-sm sm:bottom-4 sm:left-4">
-        Hanubees
-      </span>
+      {/* Nobody taps a picture. Saying it is a map is what makes it one. */}
+      {three ? (
+        <p className="mt-3 text-[13px] leading-relaxed text-text-3">
+          Every building is a project — tap one to see which, tap it again to
+          open it. Drag to move around, two fingers to zoom.
+        </p>
+      ) : null}
     </div>
   );
 }
