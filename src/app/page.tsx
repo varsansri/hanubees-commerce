@@ -2,9 +2,18 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { IsoStage } from "@/components/fx/iso-stage";
 import { CheckIcon, ChevronIcon } from "@/components/icons";
+import { OrganisationJsonLd } from "@/components/site/json-ld";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
-import { CAPABILITIES, FAQS, PROCESS, PROJECTS, SERVICES, TONE_CLASS } from "@/lib/site";
+import {
+  CAPABILITIES,
+  FAQS,
+  INDUSTRIES,
+  PROCESS,
+  PROJECTS,
+  SERVICES,
+  TONE_CLASS,
+} from "@/lib/site";
 
 /*
  * Hanubees Technologies — the company home page.
@@ -69,6 +78,7 @@ const ENGAGEMENTS = [
 export default function Home() {
   return (
     <div className="flex min-h-full flex-col">
+      <OrganisationJsonLd />
       <SiteHeader />
 
       {/* ---------------------------------------------------------------- hero */}
@@ -141,7 +151,7 @@ export default function Home() {
           {SERVICES.map((s) => (
             <li key={s.slug}>
               <Link
-                href={`/services#${s.slug}`}
+                href={`/services/${s.slug}`}
                 className={`iso-block iso-press flex h-full flex-col p-6 transition-transform duration-200 ease-[var(--ease-out)] hover:-translate-y-1 ${TONE_CLASS[s.tone]}`}
               >
                 <h3 className="iso-display text-[1.5rem]">{s.name}</h3>
@@ -174,25 +184,31 @@ export default function Home() {
 
         <ul className="mt-10 grid gap-5 sm:grid-cols-2">
           {PROJECTS.slice(0, 4).map((p) => (
-            <li key={p.slug} className="group">
-              <div
-                className="iso-block aspect-[16/10] transition-transform duration-200 ease-[var(--ease-out)] group-hover:-translate-y-1"
-                style={{ background: p.swatch }}
-                aria-hidden
-              />
-              <div className="mt-4 flex items-baseline gap-2">
-                <p className="text-[16px] font-semibold tracking-tight">{p.name}</p>
-                <span className="nums text-[13px] text-text-3">{p.year}</span>
-                {p.inHouse ? (
-                  <span className="iso-block-sm ml-auto bg-iso-sky px-2 py-0.5 text-[11px] font-bold text-iso-black">
-                    In-house
-                  </span>
-                ) : null}
-              </div>
-              <p className="mt-0.5 text-[14px] text-text-2">{p.kind}</p>
-              <p className="mt-2 max-w-prose text-[14px] leading-relaxed text-text-2">
-                {p.summary}
-              </p>
+            <li key={p.slug}>
+              <Link href={`/work/${p.slug}`} className="group block">
+                <div
+                  className="iso-block aspect-[16/10] transition-transform duration-200 ease-[var(--ease-out)] group-hover:-translate-y-1"
+                  style={{ background: p.swatch }}
+                  aria-hidden
+                />
+                <div className="mt-4 flex items-baseline gap-2">
+                  <p className="text-[16px] font-semibold tracking-tight">{p.name}</p>
+                  <span className="nums text-[13px] text-text-3">{p.year}</span>
+                  {p.inHouse ? (
+                    <span className="iso-block-sm ml-auto bg-iso-sky px-2 py-0.5 text-[11px] font-bold text-iso-black">
+                      In-house
+                    </span>
+                  ) : null}
+                </div>
+                <p className="mt-0.5 text-[14px] text-text-2">{p.kind}</p>
+                <p className="mt-2 max-w-prose text-[14px] leading-relaxed text-text-2">
+                  {p.summary}
+                </p>
+                <span className="mt-3 inline-flex items-center gap-1 text-[13px] font-semibold text-iso-sky-text">
+                  Read the case study
+                  <ChevronIcon className="size-3.5" />
+                </span>
+              </Link>
             </li>
           ))}
         </ul>
@@ -200,9 +216,18 @@ export default function Home() {
 
       {/* ------------------------------------------------------------- process */}
       <section id="process" className="mx-auto w-full max-w-6xl px-4 pt-24">
-        <h2 className="iso-display max-w-lg text-[2rem] sm:text-[2.75rem]">
-          How a project goes.
-        </h2>
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <h2 className="iso-display max-w-lg text-[2rem] sm:text-[2.75rem]">
+            How a project goes.
+          </h2>
+          <Link
+            href="/process"
+            className="inline-flex items-center gap-1 text-[14px] font-semibold text-iso-sky-text hover:underline"
+          >
+            The process in full
+            <ChevronIcon className="size-4" />
+          </Link>
+        </div>
 
         <ol className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {PROCESS.map((step, i) => (
@@ -215,6 +240,25 @@ export default function Home() {
             </li>
           ))}
         </ol>
+      </section>
+
+      {/* ---------------------------------------------------------- industries */}
+      <section className="mx-auto w-full max-w-6xl px-4 pt-24">
+        <h2 className="iso-display max-w-lg text-[2rem] sm:text-[2.75rem]">
+          Who we build for.
+        </h2>
+        <p className="mt-3 max-w-md text-[15px] text-text-2">
+          Not a list of everyone. These are the businesses whose problems we
+          already know the shape of.
+        </p>
+        <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {INDUSTRIES.map((ind) => (
+            <li key={ind.name} className="iso-block bg-surface p-6">
+              <h3 className="text-[16px] font-bold tracking-tight">{ind.name}</h3>
+              <p className="mt-2 text-[14px] leading-relaxed text-text-2">{ind.body}</p>
+            </li>
+          ))}
+        </ul>
       </section>
 
       {/* ------------------------------------------------------------ promises */}

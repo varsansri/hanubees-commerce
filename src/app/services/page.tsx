@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CheckIcon } from "@/components/icons";
+import { CheckIcon, ChevronIcon } from "@/components/icons";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
-import { PROCESS, SERVICES, TONE_CLASS } from "@/lib/site";
+import { INDUSTRIES, PROCESS, SERVICES, TONE_CLASS } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Services",
   description:
     "Websites, web apps, e-commerce, mobile apps, AI tools and care plans — what each one includes, what it costs to start, and how long it takes.",
+  alternates: { canonical: "/services" },
 };
 
 export default function ServicesPage() {
@@ -25,68 +26,74 @@ export default function ServicesPage() {
           a written scope with your screens and your dates in it — before anyone
           begins.
         </p>
+      </section>
 
-        <ul className="mt-10 flex flex-wrap gap-2">
+      <section className="mx-auto w-full max-w-6xl px-4 pt-12">
+        <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {SERVICES.map((s) => (
-            <li key={s.slug}>
-              <a
-                href={`#${s.slug}`}
-                className={`iso-block-sm iso-press inline-flex px-3 py-1.5 text-[13px] font-semibold tracking-tight ${TONE_CLASS[s.tone]}`}
+            <li key={s.slug} id={s.slug} className="scroll-mt-24">
+              <Link
+                href={`/services/${s.slug}`}
+                className={`iso-block iso-press flex h-full flex-col p-6 transition-transform duration-200 ease-[var(--ease-out)] hover:-translate-y-1 ${TONE_CLASS[s.tone]}`}
               >
-                {s.name}
-              </a>
+                <h2 className="iso-display text-[1.75rem]">{s.name}</h2>
+                <p className="mt-3 text-[15px] leading-relaxed opacity-90">{s.short}</p>
+
+                <ul className="mt-5 flex flex-col gap-2 text-[13px]">
+                  {s.includes.slice(0, 3).map((point) => (
+                    <li key={point} className="flex gap-2">
+                      <CheckIcon className="mt-0.5 size-3.5 shrink-0 opacity-70" />
+                      <span className="opacity-80">{point}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-auto pt-6">
+                  <span className="nums block text-[13px] font-bold opacity-70">
+                    From {s.from} · {s.timeline}
+                  </span>
+                  <span className="mt-2 inline-flex items-center gap-1 text-[14px] font-bold">
+                    What it involves
+                    <ChevronIcon className="size-4" />
+                  </span>
+                </div>
+              </Link>
             </li>
           ))}
         </ul>
       </section>
 
-      <div className="mx-auto w-full max-w-6xl px-4">
-        {SERVICES.map((s) => (
-          <section
-            key={s.slug}
-            id={s.slug}
-            className="mt-12 grid scroll-mt-24 gap-8 border-t-2 border-iso-black pt-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:gap-12"
-          >
-            <div>
-              <h2 className="iso-display text-[2rem] sm:text-[2.5rem]">{s.name}</h2>
-              <p className="mt-3 text-[17px] font-medium">{s.short}</p>
-              <p className="mt-5 max-w-prose text-[15px] leading-relaxed text-text-2">
-                {s.body}
-              </p>
-
-              <ul className="mt-8 grid gap-2.5 text-[14px] sm:grid-cols-2">
-                {s.includes.map((point) => (
-                  <li key={point} className="flex gap-2">
-                    <CheckIcon className="mt-0.5 size-4 shrink-0 text-iso-sky-text" />
-                    <span className="text-text-2">{point}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className={`iso-block h-fit p-6 ${TONE_CLASS[s.tone]}`}>
-              <span className="text-[13px] font-bold uppercase opacity-70">
-                Starts at
-              </span>
-              <p className="nums iso-display mt-2 text-[2.5rem]">{s.from}</p>
-              <p className="mt-3 text-[14px] font-medium opacity-80">
-                Typical timeline: {s.timeline}
-              </p>
-              <Link
-                href={`/contact?service=${s.slug}`}
-                className="iso-block-sm iso-press mt-6 inline-flex h-11 w-full items-center justify-center bg-bg text-[14px] font-semibold text-text"
-              >
-                Get a quote
-              </Link>
-            </div>
-          </section>
-        ))}
-      </div>
-
+      {/* ---------------------------------------------------------- industries */}
       <section className="mx-auto w-full max-w-6xl px-4 pt-24">
-        <h2 className="iso-display text-[2rem] sm:text-[2.75rem]">
-          The same four steps, every time.
-        </h2>
+        <h2 className="iso-display text-[2rem] sm:text-[2.75rem]">Who we build for.</h2>
+        <p className="mt-3 max-w-md text-[15px] text-text-2">
+          Not a list of everyone. These are the businesses whose problems we
+          already know the shape of.
+        </p>
+        <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {INDUSTRIES.map((ind) => (
+            <li key={ind.name} className="iso-block bg-surface p-6">
+              <h3 className="text-[16px] font-bold tracking-tight">{ind.name}</h3>
+              <p className="mt-2 text-[14px] leading-relaxed text-text-2">{ind.body}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* ------------------------------------------------------------ process */}
+      <section className="mx-auto w-full max-w-6xl px-4 pt-24">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <h2 className="iso-display text-[2rem] sm:text-[2.75rem]">
+            The same four steps, every time.
+          </h2>
+          <Link
+            href="/process"
+            className="inline-flex items-center gap-1 text-[14px] font-semibold text-iso-sky-text hover:underline"
+          >
+            The process in full
+            <ChevronIcon className="size-4" />
+          </Link>
+        </div>
         <ol className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {PROCESS.map((step, i) => (
             <li key={step.title} className="iso-block bg-surface p-6">

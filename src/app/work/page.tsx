@@ -33,10 +33,11 @@ export default function WorkPage() {
             key={p.slug}
             className="mt-12 grid gap-8 border-t-2 border-iso-black pt-12 lg:grid-cols-2 lg:gap-12"
           >
-            <div
-              className={`iso-block aspect-[16/10] ${i % 2 ? "lg:order-2" : ""}`}
+            <Link
+              href={`/work/${p.slug}`}
+              aria-label={`${p.name} case study`}
+              className={`iso-block aspect-[16/10] transition-transform duration-200 ease-[var(--ease-out)] hover:-translate-y-1 ${i % 2 ? "lg:order-2" : ""}`}
               style={{ background: p.swatch }}
-              aria-hidden
             />
 
             <div>
@@ -71,15 +72,23 @@ export default function WorkPage() {
                 ))}
               </ul>
 
-              {p.href ? (
+              <div className="mt-6 flex flex-wrap items-center gap-4">
                 <Link
-                  href={p.href}
-                  className="mt-6 inline-flex items-center gap-1 text-[14px] font-semibold text-iso-sky-text hover:underline"
+                  href={`/work/${p.slug}`}
+                  className="iso-block-sm iso-press inline-flex h-11 items-center bg-iso-yellow px-4 text-[14px] font-semibold text-iso-black"
                 >
-                  Look at it
-                  <ChevronIcon className="size-4" />
+                  Read the case study
                 </Link>
-              ) : null}
+                {p.href ? (
+                  <Link
+                    href={p.href}
+                    className="inline-flex items-center gap-1 text-[14px] font-semibold text-iso-sky-text hover:underline"
+                  >
+                    Look at it
+                    <ChevronIcon className="size-4" />
+                  </Link>
+                ) : null}
+              </div>
             </div>
           </article>
         ))}

@@ -4,9 +4,15 @@ import { CONTACT, SERVICES } from "@/lib/site";
 
 const COMPANY = [
   { href: "/work", label: "Work" },
+  { href: "/process", label: "How we work" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
   { href: "/commerce", label: "Hanubees Commerce" },
+];
+
+const LEGAL = [
+  { href: "/privacy", label: "Privacy" },
+  { href: "/terms", label: "Terms" },
 ];
 
 export function SiteFooter() {
@@ -26,7 +32,7 @@ export function SiteFooter() {
           <ul className="mt-4 flex flex-col gap-2 text-[14px] text-text-2">
             {SERVICES.map((s) => (
               <li key={s.slug}>
-                <Link href={`/services#${s.slug}`} className="hover:text-text">
+                <Link href={`/services/${s.slug}`} className="hover:text-text">
                   {s.name}
                 </Link>
               </li>
@@ -67,9 +73,14 @@ export function SiteFooter() {
       </div>
 
       <div className="border-t-2 border-iso-black">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-6 text-[13px] text-text-2">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-5 gap-y-3 px-4 py-6 text-[13px] text-text-2">
           <span>© {new Date().getFullYear()} Hanubees Technologies</span>
-          <span>Made in Coimbatore</span>
+          {LEGAL.map((l) => (
+            <Link key={l.href} href={l.href} className="hover:text-text">
+              {l.label}
+            </Link>
+          ))}
+          <span className="ml-auto">Made in Coimbatore</span>
         </div>
       </div>
     </footer>

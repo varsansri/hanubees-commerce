@@ -13,8 +13,8 @@ import { ThemeToggle } from "@/components/theme-toggle";
 const LINKS = [
   { href: "/services", label: "Services" },
   { href: "/work", label: "Work" },
+  { href: "/process", label: "How we work" },
   { href: "/about", label: "About" },
-  { href: "/commerce", label: "Commerce" },
 ];
 
 export function SiteHeader() {
