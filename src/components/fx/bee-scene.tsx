@@ -261,15 +261,20 @@ function Probe({ report }: { report: (line: string) => void }) {
   const frames = useRef(0);
   const bee = useThree((s) => s.scene);
   const gl = useThree((s) => s.gl);
+  const camera = useThree((s) => s.camera);
 
   useFrame(() => {
     frames.current += 1;
     if (frames.current % 20) return;
     const r = gl.info.render;
     const el = gl.domElement;
+    const cam = camera as THREE.OrthographicCamera;
     report(
       `css=${el.clientWidth}x${el.clientHeight} buf=${el.width}x${el.height} ` +
         `r3f=${Math.round(size.width)}x${Math.round(size.height)} ` +
+        `| frustum L${Math.round(cam.left)} R${Math.round(cam.right)} ` +
+        `T${Math.round(cam.top)} B${Math.round(cam.bottom)} zoom=${cam.zoom} ` +
+        `camZ=${Math.round(cam.position.z)} ` +
         `frames=${frames.current} kids=${bee.children.length} | ` +
         `drawCalls=${r.calls} tris=${r.triangles} lines=${r.lines} | ` +
         `ctxLost=${gl.getContext().isContextLost()}`,
