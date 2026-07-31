@@ -9,14 +9,14 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 export const metadata: Metadata = {
   metadataBase: new URL("https://hanubees.com"),
   title: {
-    default: "Hanubees — commerce for people who make things",
-    template: "%s · Hanubees",
+    default: "Hanubees Technologies — websites and software for businesses",
+    template: "%s · Hanubees Technologies",
   },
   description:
-    "Launch a store, take orders, and run the whole business from one admin. Built for Indian sellers.",
+    "A software studio in Coimbatore. We design and build websites, web apps, online stores and AI tools — fixed scope, fixed price, and you own the code.",
   openGraph: {
     type: "website",
-    siteName: "Hanubees",
+    siteName: "Hanubees Technologies",
     images: [{ url: "/og.png", width: 1200, height: 630 }],
   },
   twitter: { card: "summary_large_image", images: ["/og.png"] },

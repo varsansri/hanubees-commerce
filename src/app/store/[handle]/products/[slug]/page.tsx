@@ -172,7 +172,7 @@ export default async function ProductPage({
                   className="group"
                 >
                   <div
-                    className="iso-block aspect-[4/5] w-full [transition:transform_200ms_var(--ease-out)] group-hover:-translate-y-1"
+                    className="iso-block aspect-[4/5] w-full transition-transform duration-200 ease-[var(--ease-out)] group-hover:-translate-y-1"
                     style={{ background: p.images[0] }}
                     aria-hidden
                   />

@@ -88,7 +88,7 @@ export default async function StorefrontHome({
             <li key={p.id}>
               <Link href={`/store/${store.handle}/products/${p.slug}`} className="group">
                 <div
-                  className="iso-block aspect-[4/5] w-full overflow-hidden [transition:transform_200ms_var(--ease-out)] group-hover:-translate-y-1"
+                  className="iso-block aspect-[4/5] w-full overflow-hidden transition-transform duration-200 ease-[var(--ease-out)] group-hover:-translate-y-1"
                   style={{ background: p.images[0] }}
                   aria-hidden
                 />
