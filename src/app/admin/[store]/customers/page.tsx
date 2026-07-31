@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/ui/card";
@@ -67,7 +68,12 @@ export default async function CustomersPage({
                         {initials(c.name)}
                       </span>
                       <div className="min-w-0">
-                        <span className="block truncate font-medium">{c.name}</span>
+                        <Link
+                          href={`/admin/${store.handle}/customers/${c.id}`}
+                          className="block truncate font-medium hover:text-accent-text"
+                        >
+                          {c.name}
+                        </Link>
                         <span className="block truncate text-xs text-text-3">
                           {c.email}
                         </span>

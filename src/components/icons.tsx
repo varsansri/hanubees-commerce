@@ -166,6 +166,20 @@ export const ArrowLeftIcon = (p: SVGProps<SVGSVGElement>) => (
   </Icon>
 );
 
+export const InventoryIcon = (p: SVGProps<SVGSVGElement>) => (
+  <Icon {...p}>
+    <path d="M3 7h18v13H3z" />
+    <path d="M3 7l2-4h14l2 4" />
+    <path d="M10 12h4" />
+  </Icon>
+);
+
+export const CollectionsIcon = (p: SVGProps<SVGSVGElement>) => (
+  <Icon {...p}>
+    <path d="M3 4h7v7H3zM14 4h7v7h-7zM3 13h7v7H3zM14 13h7v7h-7z" />
+  </Icon>
+);
+
 /** Empty states — an open tray, nothing in it. */
 export const EmptyIcon = (p: SVGProps<SVGSVGElement>) => (
   <Icon {...p}>
