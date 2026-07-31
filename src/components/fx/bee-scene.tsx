@@ -260,16 +260,17 @@ function Probe({ report }: { report: (line: string) => void }) {
   const size = useThree((s) => s.size);
   const frames = useRef(0);
   const bee = useThree((s) => s.scene);
+  const gl = useThree((s) => s.gl);
 
   useFrame(() => {
     frames.current += 1;
     if (frames.current % 20) return;
-    const first = bee.children[0];
-    const p = first ? first.position : { x: 0, y: 0 };
+    const r = gl.info.render;
     report(
       `canvas=${Math.round(size.width)}x${Math.round(size.height)} ` +
-        `frames=${frames.current} kids=${bee.children.length} ` +
-        `beeAt=${Math.round(p.x)},${Math.round(p.y)}`,
+        `frames=${frames.current} kids=${bee.children.length} | ` +
+        `drawCalls=${r.calls} tris=${r.triangles} lines=${r.lines} | ` +
+        `ctxLost=${gl.getContext().isContextLost()}`,
     );
   });
 
