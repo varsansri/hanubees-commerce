@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { IsoStage } from "@/components/fx/iso-stage";
+import { IsoHero } from "@/components/fx/iso-hero";
 import { CheckIcon, ChevronIcon } from "@/components/icons";
 import { OrganisationJsonLd } from "@/components/site/json-ld";
 import { ServiceGlyph } from "@/components/site/service-icons";
@@ -124,7 +124,7 @@ export default function Home() {
             </p>
           </div>
 
-          <IsoStage className="rise rise-4" />
+          <IsoHero className="rise rise-4" />
         </div>
       </section>
 
