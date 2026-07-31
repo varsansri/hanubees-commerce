@@ -82,6 +82,18 @@ export const stores: Store[] = [
     createdAt: "2026-05-22T09:00:00Z",
     theme: { accent: "#c2410c", typography: "playful", heroImage: swatch(0) },
   },
+  {
+    id: "st_gs",
+    handle: "gs-cosmatics",
+    name: "GS Cosmatics",
+    tagline: "Colour that behaves like skincare",
+    customDomain: null,
+    // Priced in USD as the source catalogue is; change it in Settings.
+    currency: "USD",
+    plan: "growth",
+    createdAt: "2026-07-30T09:00:00Z",
+    theme: { accent: "#b8912f", typography: "editorial", heroImage: swatch(7) },
+  },
 ];
 
 /* ---------------------------------------------------------------- products */
@@ -110,6 +122,20 @@ const CATALOG: Record<string, { title: string; category: string; price: number }
     { title: "Tellicherry Peppercorns", category: "Spice", price: 62000 },
     { title: "Wayanad Cardamom", category: "Spice", price: 84000 },
     { title: "Cold-pressed Sesame Oil", category: "Pantry", price: 74000 },
+  ],
+  st_gs: [
+    { title: "Velvet Rose Lipstick", category: "Lips", price: 2499 },
+    { title: "Glow Serum Foundation", category: "Face", price: 4200 },
+    { title: "Midnight Eyeshadow Palette", category: "Eyes", price: 5499 },
+    { title: "Silk Primer Spray", category: "Face", price: 2800 },
+    { title: "Volumizing Mascara", category: "Eyes", price: 2250 },
+    { title: "Cream Blush Duo", category: "Face", price: 3200 },
+    { title: "Hydrating Lip Gloss", category: "Lips", price: 1800 },
+    { title: "Brow Defining Pencil", category: "Eyes", price: 1600 },
+    { title: "Radiance Moisturizer SPF 50", category: "Skin", price: 4800 },
+    { title: "Luminous Highlighter", category: "Face", price: 3600 },
+    { title: "Matte Liquid Lipstick", category: "Lips", price: 2000 },
+    { title: "Eyeliner Pen – Ultra Black", category: "Eyes", price: 1400 },
   ],
 };
 
@@ -169,7 +195,7 @@ const CITIES = [
 ];
 
 export const customers: Customer[] = stores.flatMap((store, si) =>
-  NAMES.slice(0, store.id === "st_saffron" ? 8 : 16).map((name, i) => {
+  NAMES.slice(0, store.id === "st_saffron" ? 8 : store.id === "st_gs" ? 20 : 16).map((name, i) => {
     const ordersCount = between(1, 9);
     return {
       id: `cu_${store.handle}_${i}`,
@@ -203,7 +229,7 @@ const CHANNELS: Order["channel"][] = ["online", "online", "online", "instagram",
 export const orders: Order[] = stores.flatMap((store) => {
   const storeProducts = products.filter((p) => p.storeId === store.id);
   const storeCustomers = customers.filter((c) => c.storeId === store.id);
-  const count = store.id === "st_saffron" ? 14 : 32;
+  const count = store.id === "st_saffron" ? 14 : store.id === "st_gs" ? 41 : 32;
 
   return Array.from({ length: count }, (_, i) => {
     const lineCount = between(1, 3);
