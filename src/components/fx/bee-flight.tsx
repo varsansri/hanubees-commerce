@@ -29,6 +29,7 @@ export function BeeFlight() {
   // difference between "never mounted", "mounted but empty" and "drawing
   // off-screen" gets established. No visitor reaches it without typing it.
   const [debug, setDebug] = useState(false);
+  const [line, setLine] = useState("waiting for a frame");
   useEffect(() => {
     setDebug(new URLSearchParams(window.location.search).get("bee") === "debug");
   }, []);
@@ -38,6 +39,8 @@ export function BeeFlight() {
       {debug ? (
         <div className="fixed top-24 left-4 z-50 bg-red-600 px-2 py-1 font-mono text-[12px] text-white">
           tier={tier} layer={tier === "off" ? "none" : "mounted"}
+          <br />
+          {line}
         </div>
       ) : null}
 
@@ -48,7 +51,7 @@ export function BeeFlight() {
           }`}
           aria-hidden
         >
-          <BeeScene quality={tier} />
+          <BeeScene quality={tier} report={debug ? setLine : undefined} />
         </div>
       )}
     </>

@@ -255,7 +255,34 @@ function Bee() {
   );
 }
 
-export function BeeScene({ quality }: { quality: "lite" | "full" }) {
+/** Reports what the renderer thinks is true, for the `?bee=debug` probe. */
+function Probe({ report }: { report: (line: string) => void }) {
+  const size = useThree((s) => s.size);
+  const frames = useRef(0);
+  const bee = useThree((s) => s.scene);
+
+  useFrame(() => {
+    frames.current += 1;
+    if (frames.current % 20) return;
+    const first = bee.children[0];
+    const p = first ? first.position : { x: 0, y: 0 };
+    report(
+      `canvas=${Math.round(size.width)}x${Math.round(size.height)} ` +
+        `frames=${frames.current} kids=${bee.children.length} ` +
+        `beeAt=${Math.round(p.x)},${Math.round(p.y)}`,
+    );
+  });
+
+  return null;
+}
+
+export function BeeScene({
+  quality,
+  report,
+}: {
+  quality: "lite" | "full";
+  report?: (line: string) => void;
+}) {
   return (
     <Canvas
       orthographic
@@ -266,6 +293,7 @@ export function BeeScene({ quality }: { quality: "lite" | "full" }) {
       flat
       style={{ position: "absolute", inset: 0 }}
     >
+      {report ? <Probe report={report} /> : null}
       <Bee />
     </Canvas>
   );
