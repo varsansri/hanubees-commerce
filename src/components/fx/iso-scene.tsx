@@ -35,6 +35,18 @@ const WHITE = "#ffffff";
 const easeOut = (p: number) => (p >= 1 ? 1 : 1 - Math.pow(2, -10 * p));
 
 /**
+ * The longest frame any animation here is allowed to believe in.
+ *
+ * This scene parks its renderer when it scrolls away, and a backgrounded tab
+ * stops requesting frames at all. Either way the first frame back reports the
+ * whole absence — thirty seconds arriving as one delta. Reading the renderer's
+ * elapsed time made the turntable swing that entire distance at once, so every
+ * animation below accumulates its own time from clamped steps instead: a scene
+ * that was parked resumes exactly where it stopped.
+ */
+const MAX_STEP = 1 / 30;
+
+/**
  * Six face materials in BoxGeometry's own order: +X, -X, +Y, -Y, +Z, -Z.
  * From this camera the eye sees +X, +Y and +Z, so those three carry the step.
  */
@@ -103,10 +115,13 @@ function Solid({
     ];
   }, [size]);
 
-  useFrame(({ clock }) => {
+  const time = useRef(0);
+
+  useFrame((_, delta) => {
     const g = group.current;
     if (!g) return;
-    const t = clock.elapsedTime;
+    time.current += Math.min(delta, MAX_STEP);
+    const t = time.current;
     const p = Math.min(1, Math.max(0, (t - delay) / RISE_SECONDS));
     const eased = easeOut(p);
 
@@ -182,14 +197,18 @@ const SCREEN: Vec3 = [2.3, 1.5, 0.16];
 function Town({ scrollRef }: { scrollRef: React.RefObject<number> }) {
   const group = useRef<THREE.Group>(null);
   const pointer = useThree((s) => s.pointer);
+  const drift = useRef(0);
 
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     const g = group.current;
     if (!g) return;
-    const damp = 1 - Math.exp(-3.5 * delta);
+    const step = Math.min(delta, MAX_STEP);
+    const damp = 1 - Math.exp(-3.5 * step);
     // A turntable slow enough to read as stillness that happens to change.
-    const drift = state.clock.elapsedTime * 0.045;
-    const targetY = drift + pointer.x * 0.18 + scrollRef.current * 0.35;
+    // The angle accumulates rather than being read off a clock, so parking the
+    // renderer pauses the turn instead of banking it up to spend on return.
+    drift.current += step * 0.045;
+    const targetY = drift.current + pointer.x * 0.18 + scrollRef.current * 0.35;
     const targetX = -pointer.y * 0.07;
     g.rotation.y += (targetY - g.rotation.y) * damp;
     g.rotation.x += (targetX - g.rotation.x) * damp;

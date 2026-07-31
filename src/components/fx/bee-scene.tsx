@@ -164,18 +164,22 @@ function Bee() {
     [size.width, size.height],
   );
 
-  const flight = useRef({ progress: 0, x: 0, y: 0, angle: 0, speed: 0 });
+  const flight = useRef({ progress: 0, x: 0, y: 0, angle: 0, speed: 0, time: 0 });
   const beat = useRef(0);
   const point = useMemo(() => new THREE.Vector3(), []);
 
-  useFrame(({ clock }, delta) => {
+  useFrame((_, delta) => {
     const group = steer.current;
     const body = tilt.current;
     if (!group || !body) return;
 
     const f = flight.current;
+    // A backgrounded tab stops asking for frames; the first one back reports
+    // the whole absence. Clamp it, and keep our own time from those clamped
+    // steps, so the idle drift resumes rather than teleporting.
     const step = Math.min(delta, 1 / 30);
-    const t = clock.elapsedTime;
+    f.time += step;
+    const t = f.time;
 
     // Where the reader is, from 0 at the top of the document to 1 at the end.
     const scrollable = Math.max(
