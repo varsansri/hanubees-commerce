@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useActionState, useState } from "react";
 import { signIn, signUp, type ActionResult } from "@/lib/actions/auth";
 import { Logo } from "@/components/logo";
 
@@ -13,11 +14,23 @@ import { Logo } from "@/components/logo";
  * two they need.
  */
 export default function LoginPage() {
-  const [mode, setMode] = useState<"in" | "up">("in");
-  return mode === "in" ? (
-    <Shell onSwitch={() => setMode("up")} mode="in" />
-  ) : (
-    <Shell onSwitch={() => setMode("in")} mode="up" />
+  return (
+    <Suspense fallback={null}>
+      <Switcher />
+    </Suspense>
+  );
+}
+
+function Switcher() {
+  // "Start free" links carry ?new=1, so the page opens on the right side
+  // instead of making the visitor find a toggle.
+  const wantsSignup = useSearchParams().get("new") !== null;
+  const [mode, setMode] = useState<"in" | "up">(wantsSignup ? "up" : "in");
+  return (
+    <Shell
+      mode={mode}
+      onSwitch={() => setMode(mode === "in" ? "up" : "in")}
+    />
   );
 }
 

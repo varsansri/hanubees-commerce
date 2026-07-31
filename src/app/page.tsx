@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { IsoStage } from "@/components/fx/iso-stage";
-import { CheckIcon } from "@/components/icons";
+import { CheckIcon, MenuIcon } from "@/components/icons";
 import { Logo, Wordmark } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { listStores } from "@/lib/data";
@@ -81,10 +81,14 @@ export default async function Landing() {
   return (
     <div className="flex min-h-full flex-col">
       <header className="sticky top-0 z-30 border-b-2 border-iso-black bg-bg">
+        {/* Drives the menu without JavaScript, the same way the admin drawer does */}
+        <input id="hb-menu" type="checkbox" className="peer sr-only" />
+
         <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
           <Link href="/">
             <Wordmark size={28} priority />
           </Link>
+
           <nav className="ml-8 hidden items-center gap-6 text-[14px] font-medium text-text-2 md:flex">
             <a href="#how" className="hover:text-text">
               How it works
@@ -96,21 +100,59 @@ export default async function Landing() {
               Pricing
             </a>
           </nav>
+
           <div className="ml-auto flex items-center gap-2">
             <ThemeToggle />
             <Link
-              href="/admin"
-              className="hidden h-9 items-center px-3 text-[14px] font-medium text-text-2 hover:text-text sm:inline-flex"
+              href="/login"
+              className="hidden h-9 items-center px-3 text-[14px] font-medium text-text-2 hover:text-text md:inline-flex"
             >
               Log in
             </Link>
             <Link
-              href="/admin"
-              className="iso-block-sm iso-press inline-flex h-10 items-center bg-iso-yellow px-4 text-[14px] font-semibold text-iso-black"
+              href="/login?new=1"
+              className="iso-block-sm iso-press hidden h-10 items-center bg-iso-yellow px-4 text-[14px] font-semibold text-iso-black md:inline-flex"
             >
               Start free
             </Link>
+
+            {/* Menu button — the only way to reach these links on a phone */}
+            <label
+              htmlFor="hb-menu"
+              className="iso-block-sm iso-press inline-flex size-10 cursor-pointer items-center justify-center bg-iso-white text-iso-black md:hidden"
+              aria-label="Open menu"
+            >
+              <MenuIcon />
+            </label>
           </div>
+        </div>
+
+        {/* Panel: hidden until the checkbox is checked, and only on small screens */}
+        <div className="hidden border-t-2 border-iso-black bg-bg peer-checked:block md:!hidden">
+          <nav className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-3 text-[15px] font-medium">
+            <a href="#how" className="py-2 text-text-2 hover:text-text">
+              How it works
+            </a>
+            <a href="#stores" className="py-2 text-text-2 hover:text-text">
+              Stores
+            </a>
+            <a href="#pricing" className="py-2 text-text-2 hover:text-text">
+              Pricing
+            </a>
+
+            <Link
+              href="/login"
+              className="iso-block-sm iso-press mt-2 inline-flex h-11 items-center justify-center bg-iso-white font-semibold text-iso-black"
+            >
+              Log in
+            </Link>
+            <Link
+              href="/login?new=1"
+              className="iso-block-sm iso-press mt-1 inline-flex h-11 items-center justify-center bg-iso-yellow font-semibold text-iso-black"
+            >
+              Start free
+            </Link>
+          </nav>
         </div>
       </header>
 
@@ -129,7 +171,7 @@ export default async function Landing() {
             </p>
             <div className="rise rise-2 mt-8 flex flex-wrap items-center gap-3">
               <Link
-                href="/admin"
+                href="/login?new=1"
                 className="iso-block iso-press inline-flex h-12 items-center bg-iso-yellow px-6 text-[15px] font-semibold text-iso-black"
               >
                 Start free
@@ -237,7 +279,7 @@ export default async function Landing() {
                 ))}
               </ul>
               <Link
-                href="/admin"
+                href="/login?new=1"
                 className={`iso-block-sm iso-press mt-7 inline-flex h-11 items-center justify-center text-[14px] font-semibold ${
                   p.featured ? "bg-iso-black text-white" : "bg-iso-yellow text-iso-black"
                 }`}
@@ -259,7 +301,7 @@ export default async function Landing() {
             Set it up this evening. Take orders in the morning.
           </p>
           <Link
-            href="/admin"
+            href="/login?new=1"
             className="iso-block-sm iso-press mt-8 inline-flex h-12 items-center bg-iso-yellow px-7 text-[15px] font-semibold text-iso-black"
           >
             Start free
