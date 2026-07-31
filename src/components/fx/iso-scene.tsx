@@ -340,12 +340,20 @@ function Town({
 
     // Panning runs along the screen's own axes, so a drag to the right moves
     // the city right rather than along a world axis the reader cannot see.
+    //
+    // Zoom is a scale on this same group, not a change to the camera. Under an
+    // orthographic camera the two are equivalent, and doing it here keeps the
+    // camera a fixed, known thing — one projection, set once, never fought over
+    // by a resize handler or a frustum update.
     const view = viewRef.current;
     offset
       .set(0, 0, 0)
       .addScaledVector(RIGHT, view.panX)
       .addScaledVector(UP, view.panY);
-    p.position.lerp(offset, 1 - Math.exp(-9 * step));
+    const ease = 1 - Math.exp(-9 * step);
+    p.position.lerp(offset, ease);
+    const scale = p.scale.x + (view.zoom - p.scale.x) * ease;
+    p.scale.setScalar(scale);
   });
 
   return (
@@ -413,22 +421,21 @@ function Town({
 }
 
 /**
- * Fits the city to the canvas, then applies the reader's own zoom on top.
- * Without the fit the slab is cropped on a phone, where the canvas is narrow.
+ * Fits the city to the canvas, and nothing else.
+ *
+ * The reader's own zoom lives on the town's scale instead, so this runs only
+ * when the canvas actually changes size. Two things writing to one camera is
+ * how a zoom silently loses to a resize.
  */
-function Camera({ viewRef }: { viewRef: React.RefObject<View> }) {
+function Camera() {
   const applied = useRef(0);
 
-  useFrame(({ camera, size }, delta) => {
-    const base = Math.max(10, Math.min(size.width / 11.6, size.height / 9.2));
-    const want = base * viewRef.current.zoom;
-    const step = Math.min(delta, MAX_STEP);
-    const next =
-      applied.current + (want - applied.current) * (1 - Math.exp(-10 * step));
-    if (applied.current > 0 && Math.abs(next - applied.current) < 0.005) return;
-    applied.current = next;
+  useFrame(({ camera, size }) => {
+    const fit = Math.max(10, Math.min(size.width / 11.6, size.height / 9.2));
+    if (Math.abs(fit - applied.current) < 0.01) return;
+    applied.current = fit;
     const cam = camera as THREE.OrthographicCamera;
-    cam.zoom = next;
+    cam.zoom = fit;
     cam.updateProjectionMatrix();
   });
 
@@ -455,7 +462,10 @@ function Pin({
     if (!object) return;
     object.getWorldPosition(position);
     position.project(camera);
-    place((position.x * 0.5 + 0.5) * size.width, (-position.y * 0.5 + 0.5) * size.height);
+    place(
+      (position.x * 0.5 + 0.5) * size.width,
+      (-position.y * 0.5 + 0.5) * size.height,
+    );
   });
 
   return null;
@@ -568,9 +578,7 @@ export function IsoScene({
       const [a, b] = [...points.current.values()];
       const spread = Math.hypot(a.x - b.x, a.y - b.y);
       if (pinch.current > 0) {
-        view.current.zoom = clampZoom(
-          zoomAtPinch.current * (spread / pinch.current),
-        );
+        setZoom(zoomAtPinch.current * (spread / pinch.current));
       }
       return;
     }
@@ -596,17 +604,25 @@ export function IsoScene({
     // map uses, and is what a trackpad pinch already sends.
     if (!event.ctrlKey) return;
     event.preventDefault();
-    view.current.zoom = clampZoom(
-      view.current.zoom * (1 - event.deltaY * 0.01),
-    );
+    setZoom(view.current.zoom * (1 - event.deltaY * 0.01));
   }
 
-  const stepZoom = (factor: number) => {
-    view.current.zoom = clampZoom(view.current.zoom * factor);
+  // Gestures write to the ref sixty times a second and must not re-render.
+  // Anything that lands as a single discrete change also updates this, so the
+  // readout on the button always shows the zoom the scene is heading for — and
+  // a press that registers is visible even before the city has moved.
+  const [shown, setShown] = useState(1);
+
+  const setZoom = (next: number) => {
+    view.current.zoom = clampZoom(next);
+    setShown(view.current.zoom);
   };
+
+  const stepZoom = (factor: number) => setZoom(view.current.zoom * factor);
 
   const reset = () => {
     view.current = { zoom: 1, panX: 0, panY: 0 };
+    setShown(1);
     setSelected(null);
   };
 
@@ -638,7 +654,7 @@ export function IsoScene({
           style={{ position: "absolute", inset: 0 }}
           onPointerMissed={() => setSelected(null)}
         >
-          <Camera viewRef={view} />
+          <Camera />
           <ScrollBinding scrollRef={scroll} />
           <Pin anchor={anchor} place={place} />
           <Town
@@ -696,9 +712,10 @@ export function IsoScene({
         <button
           type="button"
           onClick={reset}
-          className="iso-block-sm iso-press h-9 bg-bg px-3 text-[12px] font-semibold text-text"
+          className="iso-block-sm iso-press nums h-9 min-w-[3.75rem] bg-bg px-2 text-[12px] font-semibold text-text"
+          aria-label="Reset the view"
         >
-          Reset
+          {Math.round(shown * 100)}%
         </button>
       </div>
 
