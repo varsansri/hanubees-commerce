@@ -2,7 +2,8 @@
 
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
-import { CONTACT, SERVICES } from "@/lib/site";
+import { ChatPhoneIcon } from "@/components/icons";
+import { CONTACT, SERVICES, whatsappLink } from "@/lib/site";
 
 /**
  * The enquiry form.
@@ -142,15 +143,27 @@ function Form() {
         />
       </label>
 
-      <button
-        type="submit"
-        className="iso-block-sm iso-press mt-6 inline-flex h-12 items-center bg-iso-yellow px-6 text-[15px] font-semibold text-iso-black"
-      >
-        Send enquiry
-      </button>
+      <div className="mt-6 flex flex-wrap items-center gap-3">
+        <button
+          type="submit"
+          className="iso-block-sm iso-press inline-flex h-12 items-center bg-iso-yellow px-6 text-[15px] font-semibold text-iso-black"
+        >
+          Send enquiry
+        </button>
+        <a
+          href={whatsappLink()}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="iso-block-sm iso-press inline-flex h-12 items-center gap-2 bg-bg px-5 text-[15px] font-semibold"
+        >
+          <ChatPhoneIcon className="size-[18px]" />
+          WhatsApp instead
+        </a>
+      </div>
       <p className="mt-3 text-[13px] text-text-3">
-        Opens in your email app with everything above filled in — so you keep a
-        copy of what you sent. We reply within one working day.
+        Sending opens your email app with everything above filled in, so you
+        keep a copy of what you sent. Either way we reply within one working
+        day.
       </p>
     </form>
   );

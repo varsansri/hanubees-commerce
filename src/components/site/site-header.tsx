@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { MenuIcon } from "@/components/icons";
+import { ChatPhoneIcon, MenuIcon } from "@/components/icons";
 import { Wordmark } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { whatsappLink } from "@/lib/site";
 
 /**
  * The company site's header.
@@ -67,6 +68,15 @@ export function SiteHeader() {
           >
             Start a project
           </Link>
+          <a
+            href={whatsappLink()}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="iso-block-sm iso-press mt-1 inline-flex h-11 items-center justify-center gap-2 bg-iso-white font-semibold text-iso-black"
+          >
+            <ChatPhoneIcon className="size-[18px]" />
+            WhatsApp us
+          </a>
         </nav>
       </div>
     </header>

@@ -27,6 +27,17 @@ export const ORGANISATION = {
   url: SITE.url,
   logo: `${SITE.url}/bee.png`,
   email: CONTACT.email,
+  telephone: CONTACT.phone,
+  contactPoint: [
+    {
+      "@type": "ContactPoint",
+      telephone: CONTACT.phone,
+      email: CONTACT.email,
+      contactType: "sales",
+      areaServed: "Worldwide",
+      availableLanguage: ["en", "ta"],
+    },
+  ],
   foundingDate: SITE.founded,
   address: {
     "@type": "PostalAddress",

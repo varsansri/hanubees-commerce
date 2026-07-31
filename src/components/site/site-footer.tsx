@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { ChatPhoneIcon } from "@/components/icons";
 import { Logo } from "@/components/logo";
-import { CONTACT, SERVICES } from "@/lib/site";
+import { CONTACT, SERVICES, whatsappLink } from "@/lib/site";
 
 const COMPANY = [
   { href: "/work", label: "Work" },
@@ -57,18 +58,26 @@ export function SiteFooter() {
           <h2 className="text-[13px] font-bold tracking-tight uppercase">Get in touch</h2>
           <ul className="mt-4 flex flex-col gap-2 text-[14px] text-text-2">
             <li>
+              <a href={`tel:${CONTACT.phone}`} className="hover:text-text">
+                {CONTACT.phoneDisplay}
+              </a>
+            </li>
+            <li>
               <a href={`mailto:${CONTACT.email}`} className="hover:text-text">
                 {CONTACT.email}
               </a>
             </li>
             <li>{CONTACT.city}</li>
           </ul>
-          <Link
-            href="/contact"
-            className="iso-block-sm iso-press mt-5 inline-flex h-10 items-center bg-iso-yellow px-4 text-[14px] font-semibold text-iso-black"
+          <a
+            href={whatsappLink()}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="iso-block-sm iso-press mt-5 inline-flex h-10 items-center gap-2 bg-iso-yellow px-4 text-[14px] font-semibold text-iso-black"
           >
-            Start a project
-          </Link>
+            <ChatPhoneIcon className="size-4" />
+            WhatsApp us
+          </a>
         </div>
       </div>
 

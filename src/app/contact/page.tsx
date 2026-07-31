@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { CheckIcon } from "@/components/icons";
+import { ChatPhoneIcon, CheckIcon, MailIcon, PhoneIcon } from "@/components/icons";
 import { ContactForm } from "@/components/site/contact-form";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
-import { CONTACT, PROCESS } from "@/lib/site";
+import { CONTACT, PROCESS, whatsappLink } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -38,14 +38,41 @@ export default function ContactPage() {
 
           <div className="flex flex-col gap-5">
             <div className="iso-block bg-iso-yellow p-6 text-iso-black">
-              <h2 className="iso-display text-[1.5rem]">Rather just email?</h2>
+              <h2 className="iso-display text-[1.5rem]">Rather just talk?</h2>
+              <p className="mt-2 text-[14px] leading-relaxed opacity-80">
+                Message us and you are talking to the people who would build it,
+                not a sales desk.
+              </p>
+
               <a
-                href={`mailto:${CONTACT.email}`}
-                className="mt-3 inline-block text-[16px] font-semibold underline underline-offset-4"
+                href={whatsappLink()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="iso-block-sm iso-press mt-5 flex h-12 items-center justify-center gap-2 bg-iso-black text-[15px] font-semibold text-white"
               >
-                {CONTACT.email}
+                <ChatPhoneIcon className="size-[18px]" />
+                WhatsApp us
               </a>
-              <p className="mt-4 text-[14px] leading-relaxed opacity-80">
+
+              <ul className="mt-4 flex flex-col gap-3 text-[15px] font-semibold">
+                <li>
+                  <a href={`tel:${CONTACT.phone}`} className="flex items-center gap-2.5">
+                    <PhoneIcon className="size-[18px] shrink-0 opacity-70" />
+                    {CONTACT.phoneDisplay}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={`mailto:${CONTACT.email}`}
+                    className="flex items-center gap-2.5 break-all"
+                  >
+                    <MailIcon className="size-[18px] shrink-0 opacity-70" />
+                    {CONTACT.email}
+                  </a>
+                </li>
+              </ul>
+
+              <p className="mt-5 border-t-2 border-iso-black/20 pt-4 text-[13px] leading-relaxed opacity-70">
                 {CONTACT.city}. We work with clients across time zones — a
                 written update every day, a call every week.
               </p>

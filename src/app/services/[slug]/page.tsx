@@ -1,14 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CheckIcon, ChevronIcon } from "@/components/icons";
+import { ChatPhoneIcon, CheckIcon, ChevronIcon } from "@/components/icons";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import { BreadcrumbJsonLd, ServiceJsonLd } from "@/components/site/json-ld";
 import { ProjectPreview } from "@/components/site/previews";
 import { ServiceGlyph } from "@/components/site/service-icons";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
-import { PROCESS, PROJECTS, SERVICES, TONE_CLASS, serviceBySlug } from "@/lib/site";
+import {
+  PROCESS,
+  PROJECTS,
+  SERVICES,
+  TONE_CLASS,
+  serviceBySlug,
+  whatsappLink,
+} from "@/lib/site";
 
 export function generateStaticParams() {
   return SERVICES.map((s) => ({ slug: s.slug }));
@@ -86,6 +93,15 @@ export default async function ServicePage({
             >
               Get a quote
             </Link>
+            <a
+              href={whatsappLink(service.name.toLowerCase())}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="iso-block-sm iso-press mt-2 inline-flex h-11 w-full items-center justify-center gap-2 bg-bg text-[14px] font-semibold text-text"
+            >
+              <ChatPhoneIcon className="size-4" />
+              WhatsApp us
+            </a>
             <p className="mt-3 text-[12px] leading-relaxed opacity-70">
               The real number comes in a written scope, before any work starts.
             </p>

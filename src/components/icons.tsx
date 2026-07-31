@@ -187,3 +187,26 @@ export const EmptyIcon = (p: SVGProps<SVGSVGElement>) => (
     <path d="M4.5 6.5 3 13v6h18v-6l-1.5-6.5A2 2 0 0 0 17.6 5H6.4a2 2 0 0 0-1.9 1.5Z" />
   </Icon>
 );
+
+/* A phone inside a speech bubble: the chat-first way to reach a business.
+   Drawn in this set's own stroke rather than borrowed from a brand sheet — the
+   label beside it does the identifying. */
+export const ChatPhoneIcon = (p: SVGProps<SVGSVGElement>) => (
+  <Icon {...p}>
+    <path d="M20.5 11.5a8.5 8.5 0 0 1-12.4 7.55L3.5 20.5l1.5-4.5A8.5 8.5 0 1 1 20.5 11.5Z" />
+    <path d="M9.2 9.1c.2-.5.6-.6 1-.5l.7.2c.3.1.4.4.3.7l-.3.8c-.1.2 0 .4.1.6.4.6.9 1.1 1.5 1.4.2.1.4.1.6 0l.7-.4c.3-.2.6-.1.8.1l.5.6c.2.3.2.6 0 .9-.5.6-1.3.8-2 .5a7 7 0 0 1-3.8-3.7c-.3-.7-.3-1.5.1-2.2Z" />
+  </Icon>
+);
+
+export const PhoneIcon = (p: SVGProps<SVGSVGElement>) => (
+  <Icon {...p}>
+    <path d="M6.2 3.5h3l1.4 3.6-1.9 1.4a11.5 11.5 0 0 0 5.3 5.3l1.4-1.9 3.6 1.4v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.2 5.7a2 2 0 0 1 2-2.2Z" />
+  </Icon>
+);
+
+export const MailIcon = (p: SVGProps<SVGSVGElement>) => (
+  <Icon {...p}>
+    <rect x="3" y="5.5" width="18" height="13" rx="2" />
+    <path d="m3.8 7 7.1 5.3c.65.5 1.55.5 2.2 0L20.2 7" />
+  </Icon>
+);

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { IsoHero } from "@/components/fx/iso-hero";
-import { CheckIcon, ChevronIcon } from "@/components/icons";
+import { ChatPhoneIcon, CheckIcon, ChevronIcon } from "@/components/icons";
 import { OrganisationJsonLd } from "@/components/site/json-ld";
 import { ServiceGlyph } from "@/components/site/service-icons";
 import { WorkShowcase } from "@/components/site/showcase";
@@ -15,6 +15,7 @@ import {
   PROJECTS,
   SERVICES,
   TONE_CLASS,
+  whatsappLink,
 } from "@/lib/site";
 
 /*
@@ -394,13 +395,24 @@ export default function Home() {
               One call, an hour, no charge. You leave with a plan — whether or
               not we are the ones who build it.
             </p>
-            <Link
-              href="/contact"
-              className="iso-block-sm iso-press group mt-8 inline-flex h-12 items-center gap-2 bg-iso-black pr-6 pl-7 text-[15px] font-semibold text-white"
-            >
-              Start a project
-              <ChevronIcon className="size-4 transition-transform duration-200 ease-[var(--ease-out)] group-hover:translate-x-1" />
-            </Link>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <Link
+                href="/contact"
+                className="iso-block-sm iso-press group inline-flex h-12 items-center gap-2 bg-iso-black pr-6 pl-7 text-[15px] font-semibold text-white"
+              >
+                Start a project
+                <ChevronIcon className="size-4 transition-transform duration-200 ease-[var(--ease-out)] group-hover:translate-x-1" />
+              </Link>
+              <a
+                href={whatsappLink()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="iso-block-sm iso-press inline-flex h-12 items-center gap-2 bg-iso-white px-6 text-[15px] font-semibold text-iso-black"
+              >
+                <ChatPhoneIcon className="size-[18px]" />
+                WhatsApp us
+              </a>
+            </div>
           </div>
         </div>
       </section>

@@ -23,12 +23,27 @@ export const TONE_CLASS: Record<Tone, string> = {
   white: "bg-iso-white text-iso-black",
 };
 
-/** No phone here on purpose — add one only when it is a real, answered line. */
 export const CONTACT = {
   email: "hello@hanubees.com",
+  /** E.164, for tel: and wa.me links. */
+  phone: "+917695971495",
+  /** Grouped the way an Indian number is read aloud. */
+  phoneDisplay: "+91 76959 71495",
   city: "Coimbatore, Tamil Nadu",
   country: "India",
 };
+
+/**
+ * WhatsApp is how businesses here actually start a conversation, so it gets a
+ * real button rather than a footer link. The message is pre-filled but plain —
+ * enough that the reply has context, short enough that nobody deletes it.
+ */
+export function whatsappLink(about?: string) {
+  const text = about
+    ? `Hi Hanubees — I'd like to talk about ${about}.`
+    : "Hi Hanubees — I'd like to talk about a project.";
+  return `https://wa.me/${CONTACT.phone.replace("+", "")}?text=${encodeURIComponent(text)}`;
+}
 
 /* ------------------------------------------------------------------ services */
 
