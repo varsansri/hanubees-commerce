@@ -56,6 +56,16 @@ const MAX_STEP = 1 / 30;
 const RIGHT = new THREE.Vector3(1, 0, -1).normalize();
 const UP = new THREE.Vector3(-1, 2, -1).normalize();
 
+/**
+ * Defined once, outside render.
+ *
+ * As an inline literal this is a new object every render, and React Three
+ * Fiber re-applies camera props when they change — which quietly resets
+ * anything written to the camera in between. Nothing here writes to the camera
+ * except the fit, but the trap is worth closing permanently.
+ */
+const CAMERA = { position: [14, 14, 14] as const, zoom: 46, near: -100, far: 100 };
+
 const ZOOM_MIN = 0.75;
 const ZOOM_MAX = 3.2;
 const PAN_LIMIT = 5;
@@ -358,7 +368,7 @@ function Town({
 
   return (
     <group ref={pan}>
-      <group ref={town} position={[0, -1.1, 0]}>
+      <group ref={town} position={[0, 0.35, 0]}>
         {/* the ground — the grid is its child, so it rides up with it */}
         <Solid size={SLAB} position={[0, -0.3, 0]} color={SKY}>
           <gridHelper
@@ -431,7 +441,7 @@ function Camera() {
   const applied = useRef(0);
 
   useFrame(({ camera, size }) => {
-    const fit = Math.max(10, Math.min(size.width / 11.6, size.height / 9.2));
+    const fit = Math.max(10, Math.min(size.width / 11.2, size.height / 8.2));
     if (Math.abs(fit - applied.current) < 0.01) return;
     applied.current = fit;
     const cam = camera as THREE.OrthographicCamera;
@@ -645,7 +655,7 @@ export function IsoScene({
         <Canvas
           orthographic
           // On the (1, 1, 1) diagonal: isometric in the literal sense.
-          camera={{ position: [14, 14, 14], zoom: 46, near: -100, far: 100 }}
+          camera={CAMERA}
           dpr={quality === "lite" ? [1, 1.5] : [1, 2]}
           frameloop={active ? "always" : "never"}
           gl={{ antialias: true, alpha: true }}
