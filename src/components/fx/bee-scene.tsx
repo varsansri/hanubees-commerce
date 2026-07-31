@@ -269,12 +269,25 @@ function Probe({ report }: { report: (line: string) => void }) {
     const r = gl.info.render;
     const el = gl.domElement;
     const cam = camera as THREE.OrthographicCamera;
+    // Where does the body actually land in normalised device coordinates?
+    const body = bee.children[0]?.children[0]?.children[0]?.children[0];
+    const ndc = new THREE.Vector3();
+    let where = "no body";
+    if (body) {
+      body.getWorldPosition(ndc);
+      const scale = new THREE.Vector3();
+      body.getWorldScale(scale);
+      ndc.project(cam);
+      where =
+        `ndc=${ndc.x.toFixed(2)},${ndc.y.toFixed(2)},${ndc.z.toFixed(2)} ` +
+        `scale=${scale.x.toFixed(2)} vis=${body.visible}`;
+    }
     report(
       `css=${el.clientWidth}x${el.clientHeight} buf=${el.width}x${el.height} ` +
         `r3f=${Math.round(size.width)}x${Math.round(size.height)} ` +
         `| frustum L${Math.round(cam.left)} R${Math.round(cam.right)} ` +
         `T${Math.round(cam.top)} B${Math.round(cam.bottom)} zoom=${cam.zoom} ` +
-        `camZ=${Math.round(cam.position.z)} ` +
+        `camZ=${Math.round(cam.position.z)} | ${where} | ` +
         `frames=${frames.current} kids=${bee.children.length} | ` +
         `drawCalls=${r.calls} tris=${r.triangles} lines=${r.lines} | ` +
         `ctxLost=${gl.getContext().isContextLost()}`,
