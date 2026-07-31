@@ -40,9 +40,11 @@ export function useEffectTier(): EffectTier {
     };
 
     evaluate();
-    for (const q of [motion, small, coarse]) q.addEventListener("change", evaluate);
+    for (const q of [motion, small, coarse])
+      q.addEventListener("change", evaluate);
     return () => {
-      for (const q of [motion, small, coarse]) q.removeEventListener("change", evaluate);
+      for (const q of [motion, small, coarse])
+        q.removeEventListener("change", evaluate);
     };
   }, []);
 
@@ -70,4 +72,27 @@ export function useInView(ref: React.RefObject<HTMLElement | null>): boolean {
   }, [ref, seen]);
 
   return seen;
+}
+
+/**
+ * True while the element is on screen — unlike `useInView`, which latches once
+ * and stays true. Used to park a renderer that has scrolled away.
+ */
+export function useOnScreen(ref: React.RefObject<HTMLElement | null>): boolean {
+  const [onScreen, setOnScreen] = useState(true);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => setOnScreen(entry.isIntersecting),
+      {
+        rootMargin: "120px",
+      },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [ref]);
+
+  return onScreen;
 }

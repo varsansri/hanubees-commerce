@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useRef } from "react";
 import { Bee2D } from "./bee-2d";
-import { useEffectTier, useInView } from "./use-effects-enabled";
+import { useEffectTier, useInView, useOnScreen } from "./use-effects-enabled";
 
 /**
  * The hero stage, 3D first.
@@ -25,6 +25,7 @@ export function IsoHero({ className = "" }: { className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const tier = useEffectTier();
   const inView = useInView(ref);
+  const onScreen = useOnScreen(ref);
   const three = tier !== "off" && inView;
 
   return (
@@ -40,7 +41,10 @@ export function IsoHero({ className = "" }: { className?: string }) {
 
       <div className="relative aspect-[4/3] w-full sm:aspect-[16/11]">
         {three ? (
-          <IsoScene quality={tier === "lite" ? "lite" : "full"} />
+          <IsoScene
+            quality={tier === "lite" ? "lite" : "full"}
+            active={onScreen}
+          />
         ) : (
           <div className="flex h-full w-full items-center justify-center p-6">
             <Bee2D size={340} priority className="max-w-[78%]" />

@@ -21,9 +21,25 @@ const pc = (n: number, total: number) => `${(n / total) * 100}%`;
 
 const WINGS = [
   // back wing — hinges at its lower-right, where it meets the box
-  { src: "/bee-wing-0.png", x: 87, y: 20, w: 226, h: 173, origin: "88% 92%", cls: "bee-wing-back" },
+  {
+    src: "/bee-wing-0.png",
+    x: 87,
+    y: 20,
+    w: 226,
+    h: 173,
+    origin: "88% 92%",
+    cls: "bee-wing-back",
+  },
   // front wing — hinges at its left edge, against the box side
-  { src: "/bee-wing-1.png", x: 365, y: 223, w: 321, h: 135, origin: "6% 42%", cls: "bee-wing-front" },
+  {
+    src: "/bee-wing-1.png",
+    x: 365,
+    y: 223,
+    w: 321,
+    h: 135,
+    origin: "6% 42%",
+    cls: "bee-wing-front",
+  },
 ];
 
 export function Bee2D({

@@ -96,7 +96,11 @@ function Solid({
   // world units, drawn back-faces-only so only its silhouette survives.
   const shellScale = useMemo<Vec3>(() => {
     const t = 0.05;
-    return [1 + (2 * t) / size[0], 1 + (2 * t) / size[1], 1 + (2 * t) / size[2]];
+    return [
+      1 + (2 * t) / size[0],
+      1 + (2 * t) / size[1],
+      1 + (2 * t) / size[2],
+    ];
   }, [size]);
 
   useFrame(({ clock }) => {
@@ -106,14 +110,19 @@ function Solid({
     const p = Math.min(1, Math.max(0, (t - delay) / RISE_SECONDS));
     const eased = easeOut(p);
 
-    g.position.y = position[1] - DROP * (1 - eased) + Math.sin(t * 0.75) * hover * eased;
+    g.position.y =
+      position[1] - DROP * (1 - eased) + Math.sin(t * 0.75) * hover * eased;
     if (spin) g.rotation.y = t * spin * eased;
   });
 
   return (
     <group ref={group} position={position}>
       <mesh geometry={geometry} scale={shellScale}>
-        <meshBasicMaterial color={INK} side={THREE.BackSide} toneMapped={false} />
+        <meshBasicMaterial
+          color={INK}
+          side={THREE.BackSide}
+          toneMapped={false}
+        />
       </mesh>
       <mesh geometry={geometry} material={faces} />
       <lineSegments geometry={edges}>
@@ -147,7 +156,12 @@ function Windows({
       const y = size[1] / 2 - 0.45 - r * 0.5;
       const x = (c - (columns - 1) / 2) * 0.52;
       cells.push(
-        <mesh key={`z${r}${c}`} geometry={panel} material={material} position={[x, y, size[2] / 2 + 0.01]} />,
+        <mesh
+          key={`z${r}${c}`}
+          geometry={panel}
+          material={material}
+          position={[x, y, size[2] / 2 + 0.01]}
+        />,
         <mesh
           key={`x${r}${c}`}
           geometry={panel}
@@ -194,18 +208,58 @@ function Town({ scrollRef }: { scrollRef: React.RefObject<number> }) {
       </Solid>
 
       {/* the skyline, rising left to right */}
-      <Solid size={[2, 1.4, 2]} position={[-2, 0.7, 1.5]} color={YELLOW} delay={0.1} />
-      <Solid size={[1.2, 2, 1.2]} position={[-0.9, 1, -0.9]} color={SKY_DEEP} delay={0.24} />
-      <Solid size={TOWER} position={[1.5, 1.45, -1.3]} color={WHITE} delay={0.38}>
+      <Solid
+        size={[2, 1.4, 2]}
+        position={[-2, 0.7, 1.5]}
+        color={YELLOW}
+        delay={0.1}
+      />
+      <Solid
+        size={[1.2, 2, 1.2]}
+        position={[-0.9, 1, -0.9]}
+        color={SKY_DEEP}
+        delay={0.24}
+      />
+      <Solid
+        size={TOWER}
+        position={[1.5, 1.45, -1.3]}
+        color={WHITE}
+        delay={0.38}
+      >
         <Windows size={TOWER} rows={3} columns={2} />
       </Solid>
-      <Solid size={[1.4, 1, 1.4]} position={[2.3, 0.5, 1.9]} color={INK} delay={0.52} />
-      <Solid size={[0.8, 0.8, 0.8]} position={[-2.6, 0.4, -1.5]} color={WHITE} delay={0.62} />
-      <Solid size={[0.6, 0.6, 0.6]} position={[-0.2, 0.3, -2.7]} color={YELLOW} delay={0.7} />
+      <Solid
+        size={[1.4, 1, 1.4]}
+        position={[2.3, 0.5, 1.9]}
+        color={INK}
+        delay={0.52}
+      />
+      <Solid
+        size={[0.8, 0.8, 0.8]}
+        position={[-2.6, 0.4, -1.5]}
+        color={WHITE}
+        delay={0.62}
+      />
+      <Solid
+        size={[0.6, 0.6, 0.6]}
+        position={[-0.2, 0.3, -2.7]}
+        color={YELLOW}
+        delay={0.7}
+      />
 
       {/* the thing being built, standing on the tall tower */}
-      <Solid size={[0.3, 0.5, 0.3]} position={[1.5, 3.15, -1.3]} color={INK} delay={0.9} />
-      <Solid size={SCREEN} position={[1.5, 4.15, -1.3]} color={WHITE} delay={1.02}>
+      <Solid
+        size={[0.3, 0.5, 0.3]}
+        position={[1.5, 3.15, -1.3]}
+        color={INK}
+        delay={0.9}
+      />
+      <Solid
+        size={SCREEN}
+        position={[1.5, 4.15, -1.3]}
+        color={WHITE}
+        delay={1.02}
+      >
         <mesh position={[0, 0.52, 0.09]}>
           <boxGeometry args={[2.3, 0.3, 0.02]} />
           <meshBasicMaterial color={YELLOW} toneMapped={false} />
@@ -260,12 +314,23 @@ function Fit() {
 /** Feeds page scroll into the scene without re-rendering any React. */
 function ScrollBinding({ scrollRef }: { scrollRef: React.RefObject<number> }) {
   useFrame(() => {
-    scrollRef.current = Math.min(1, window.scrollY / Math.max(1, window.innerHeight));
+    scrollRef.current = Math.min(
+      1,
+      window.scrollY / Math.max(1, window.innerHeight),
+    );
   });
   return null;
 }
 
-export function IsoScene({ quality }: { quality: "lite" | "full" }) {
+export function IsoScene({
+  quality,
+  active,
+}: {
+  quality: "lite" | "full";
+  /** False once the hero has scrolled away — the renderer parks rather than
+      burning frames behind the reader, leaving the bee as the only live one. */
+  active: boolean;
+}) {
   const scroll = useRef(0);
 
   return (
@@ -274,6 +339,7 @@ export function IsoScene({ quality }: { quality: "lite" | "full" }) {
       // On the (1, 1, 1) diagonal: isometric in the literal sense.
       camera={{ position: [14, 14, 14], zoom: 46, near: -100, far: 100 }}
       dpr={quality === "lite" ? [1, 1.5] : [1, 2]}
+      frameloop={active ? "always" : "never"}
       gl={{ antialias: true, alpha: true }}
       // `flat` turns off tone mapping: the colours on screen are the tokens.
       flat
